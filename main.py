@@ -21,6 +21,7 @@ class Workspace(object):
 
 
 class ImportWizard(object):
+    pass
 
     # contains
 
