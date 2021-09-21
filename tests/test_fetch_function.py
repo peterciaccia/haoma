@@ -3,6 +3,8 @@
 from EntrezpyTools.entrezpy_tools import EntrezSession
 
 Test = EntrezSession()
-Test.fetch_UIDs()
+uids = Test.fetch_UIDs(verbose=True)
 
-Test.fetch_something()
+Test.esearch_2()
+
+Test.efetch(uids)

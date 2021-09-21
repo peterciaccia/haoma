@@ -6,6 +6,7 @@ Contains classes, functions for geo-browser ipynb
 import os
 from entrezpy import conduit
 from entrezpy.esearch import esearcher
+from entrezpy.efetch import efetcher
 
 
 # ......................................................................................................................
@@ -36,7 +37,7 @@ class EntrezSession(object):
     # Esearch returning UIDs
     def fetch_UIDs(self, db='nucleotide',  term='viruses[orgn]', retmax=3, rettype='uilist', verbose=False):
 
-        e = esearcher.Esearcher('esearcher', self.email)
+        e = esearcher.Esearcher('Haoma', self.email)
 
         a = e.inquire({'db':db,
                        'term': term,
@@ -51,8 +52,8 @@ class EntrezSession(object):
             print(uids)
         return uids
 
-    def fetch_something(self):
-        e = esearcher.Esearcher("entrezpy",
+    def esearch_2(self):
+        e = esearcher.Esearcher('Haoma',
                                 self.email,
                                 apikey=self._ncbi_api_key,
                                 apikey_var=os.getenv('ncbi_api_key'),
@@ -65,3 +66,18 @@ class EntrezSession(object):
                               'rettype': 'uilist'})
         print(analyzer.result.count, analyzer.result.uids)
 
+
+# a list of uids is passed
+    def efetch(self, uids):
+        e = efetcher.Efetcher('Haoma',
+                              self.email,
+                              apikey=self._ncbi_api_key,
+                              apikey_var=os.getenv('ncbi_api_key'),
+                              threads=None,
+                              qid=None
+                              )
+        analyzer = e.inquire({'db': 'pubmed',
+                              'id': [17284678, 9997],
+                              'retmode': 'text',
+                              'rettype': 'abstract'})
+        # print(analyzer.count, analyzer.retmax, analyzer.retstart, analyzer.uids)
