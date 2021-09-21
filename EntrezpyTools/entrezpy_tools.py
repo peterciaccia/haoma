@@ -7,6 +7,7 @@ import os
 from entrezpy import conduit
 from entrezpy.esearch import esearcher
 from entrezpy.efetch import efetcher
+import logging as log
 
 
 # ......................................................................................................................
@@ -15,12 +16,9 @@ class EntrezSession(object):
     def __init__(self):
         self.email = os.getenv('dev_email')
         self.ncbi_api_key = os.getenv('ncbi_api_key')
-        # self.c = conduit.Conduit(self.email)
-        # self.fetch_pipeline = self.c.new_pipeline()
-
         self.default_params = {
             'db': 'genome',
-            'term': 'e%20coli%20mg1655',
+            'term': 'mg1655',
             'retmax': 3,
             'rettype': 'uilist'
 
@@ -43,6 +41,10 @@ class EntrezSession(object):
     # ..............................................................
 
     def get_params(self):
+        """
+        gets current params attribute
+        :return:
+        """
         return self.params
 
     # ..............................................................
@@ -75,7 +77,12 @@ class EntrezSession(object):
         else:
             self.set_params(kwargs)
 
-        e = esearcher.Esearcher('Haoma', self.email, apikey=self.ncbi_api_key)
+        e = esearcher.Esearcher('Haoma',
+                                self.email,
+                                apikey=self.ncbi_api_key,
+                                qid=None
+                                )
+        log.debug('qid: {}'.format(e.id))
         a = e.inquire(self.get_params())
 
         uids = a.get_result().uids
