@@ -1,0 +1,37 @@
+Entrez Database	E-utility Database Name
+BioProject	bioproject
+BioSample	biosample
+Biosystems	biosystems
+Books	books
+Conserved Domains	cdd
+dbGaP	gap
+dbVar	dbvar
+Epigenomics	epigenomics
+EST	nucest
+Gene	gene
+Genome	genome
+GEO Datasets	gds
+GEO Profiles	geoprofiles
+GSS	nucgss
+HomoloGene	homologene
+MeSH	mesh
+NCBI C++ Toolkit	toolkit
+NCBI Web Site	ncbisearch
+NLM Catalog	nlmcatalog
+Nucleotide	nuccore
+OMIA	omia
+PopSet	popset
+Probe	probe
+Protein	protein
+Protein Clusters	proteinclusters
+PubChem BioAssay	pcassay
+PubChem Compound	pccompound
+PubChem Substance	pcsubstance
+PubMed	pubmed
+PubMed Central	pmc
+SNP	snp
+SRA	sra
+Structure	structure
+Taxonomy	taxonomy
+UniGene	unigene
+UniSTS	unists
