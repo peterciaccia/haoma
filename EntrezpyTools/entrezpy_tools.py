@@ -14,10 +14,40 @@ from entrezpy.efetch import efetcher
 class EntrezSession(object):
     def __init__(self):
         self.email = os.getenv('dev_email')
-        self._ncbi_api_key = os.getenv('ncbi_api_key')
-        self.c = conduit.Conduit(self.email)
-        self.fetch_pipeline = self.c.new_pipeline()
+        self.ncbi_api_key = os.getenv('ncbi_api_key')
+        # self.c = conduit.Conduit(self.email)
+        # self.fetch_pipeline = self.c.new_pipeline()
 
+        self.default_params = {
+            'db': 'genome',
+            'term': 'e%20coli%20mg1655',
+            'retmax': 3,
+            'rettype': 'uilist'
+
+        }
+        self.params = {}
+        self.params.update(self.default_params)
+        pass
+
+    # ..............................................................
+
+    def set_params(self, params_update):
+        """
+        updates params attribute
+        :param params_update:
+        :return:
+        """
+        self.params.update(params_update)
+        return
+
+    # ..............................................................
+
+    def get_params(self):
+        return self.params
+
+    # ..............................................................
+
+    #
     ### Example
     # c = conduit.Conduit('email')
     # fetch_pipeline = c.new_pipeline()
@@ -35,27 +65,28 @@ class EntrezSession(object):
 
     ######################################################
     # Esearch returning UIDs
-    def fetch_UIDs(self, db='nucleotide',  term='viruses[orgn]', retmax=3, rettype='uilist', verbose=False):
+    # def fetch_UIDs(self, db='nucleotide',  term='viruses[orgn]', retmax=3, rettype='uilist', verbose=False):
 
-        e = esearcher.Esearcher('Haoma', self.email)
+    # ..............................................................
 
-        a = e.inquire({'db':db,
-                       'term': term,
-                       'retmax': retmax,
-                       'rettype': rettype
-                       })
-        """
-        'idtype' : 'acc'
-        """
+    def fetch_UIDs(self, **kwargs):
+        if kwargs == {}:
+            self.set_params(self.default_params)
+        else:
+            self.set_params(kwargs)
+
+        e = esearcher.Esearcher('Haoma', self.email, apikey=self.ncbi_api_key)
+        a = e.inquire(self.get_params())
+
         uids = a.get_result().uids
-        if verbose:
-            print(uids)
         return uids
+
+    # ..............................................................
 
     def esearch_2(self):
         e = esearcher.Esearcher('Haoma',
                                 self.email,
-                                apikey=self._ncbi_api_key,
+                                apikey=self.ncbi_api_key,
                                 apikey_var=os.getenv('ncbi_api_key'),
                                 threads=None,
                                 qid=None
@@ -71,7 +102,7 @@ class EntrezSession(object):
     def efetch(self, uids):
         e = efetcher.Efetcher('Haoma',
                               self.email,
-                              apikey=self._ncbi_api_key,
+                              apikey=self.ncbi_api_key,
                               apikey_var=os.getenv('ncbi_api_key'),
                               threads=None,
                               qid=None
