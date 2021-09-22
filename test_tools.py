@@ -16,7 +16,12 @@ def config_test_log(filename, logging_level=logging.DEBUG):
     test_dir = test_script_path.parent.absolute() / "logs"
     test_filestem = test_script_path.stem
     test_output_path = test_dir / Path(test_filestem).with_suffix(".log")
-    logging.basicConfig(filename=test_output_path, filemode="w", level=logging_level)
+    logging.basicConfig(filename=test_output_path,
+                        filemode="w",
+                        level=logging_level,
+                        format='%(asctime)s,%(msecs)d %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',
+                        datefmt='%Y-%m-%d:%H:%M:%S'
+                        )
     logging.info(str(datetime.now()))
     return
 

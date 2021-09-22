@@ -71,7 +71,22 @@ class EntrezSession(object):
 
     # ..............................................................
 
+    def make_esearcher(self):
+
+        e = esearcher.Esearcher('Haoma',
+                                self.email,
+                                apikey=self.ncbi_api_key,
+                                qid=None
+                                )
+
+        return e
+
     def fetch_UIDs(self, **kwargs):
+        """
+        Sends Entrez request for UIDs based on passed parameters
+        :param kwargs:
+        :return: uids:
+        """
         if kwargs == {}:
             self.set_params(self.default_params)
         else:
@@ -82,10 +97,9 @@ class EntrezSession(object):
                                 apikey=self.ncbi_api_key,
                                 qid=None
                                 )
-        log.debug('qid: {}'.format(e.id))
-        a = e.inquire(self.get_params())
+        analyzer = e.inquire(self.get_params())
 
-        uids = a.get_result().uids
+        uids = analyzer.get_result().uids
         return uids
 
     # ..............................................................

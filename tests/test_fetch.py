@@ -25,6 +25,9 @@ if output1 == ['2095581274', '2095581262', '2095581251']:
 else:
     log.warning('Test 1 failed')
 
+# Test amendments
+# e = Test.make_esearcher()
+# e.query_monitor(23424234)
 
 # Test 2 - Fetches UIDs by using default params
 log.info('Test 2')
