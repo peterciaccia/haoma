@@ -14,8 +14,8 @@ import logging as log
 
 class EntrezSession(object):
     def __init__(self):
-        self.email = os.getenv('dev_email')
-        self.ncbi_api_key = os.getenv('ncbi_api_key')
+        self.email = os.getenv('EMAIL')
+        self.ncbi_api_key = os.getenv('NCBI_API_KEY')
         self.default_params = {
             'db': 'genome',
             'term': 'mg1655',
