@@ -3,3 +3,4 @@ logs/
 .ipynb_checkpoints/
 .idea/
 scratch/
+.DS_Store
