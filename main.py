@@ -31,6 +31,9 @@ class ImportWizard(object):
     ### Rna-seq ###
     # TODO: Import .fastq
 
+class _ImportWizrd:
+
+
 
 
 

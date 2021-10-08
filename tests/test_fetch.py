@@ -45,9 +45,24 @@ test_tools.config_test_log(__file__)
 # Test 1
 workflow = entrezpy.conduit.Conduit(os.getenv('EMAIL'))
 get_sequences = workflow.new_pipeline()
-sid = get_sequences.add_search({'db': 'nucleotide', 'term': 'viruses[Organism]', 'rettype': 'count', 'retmax': 3})
+sid = get_sequences.add_search({'db': 'nucleotide',
+                                'term': 'Eupatorium yellow vein virus',
+                                'rettype': 'count',
+                                'retmax': 3,
+                                'retmode': 'json'}
+                               )
 get_sequences.add_fetch({'retmode': 'text', 'rettype': 'gb'}, dependency=sid)
 analyzer = workflow.run(get_sequences)
 
-# Test.esearch_2()
-# Test.efetch(uids)
+
+# Test 2
+workflow = entrezpy.conduit.Conduit(os.getenv('EMAIL'))
+get_sequences = workflow.new_pipeline()
+sid = get_sequences.add_search({'db': 'genome',
+                                'term': 'Eupatorium yellow vein virus',
+                                'rettype': 'count',
+                                'retmax': 3,
+                                'retmode': 'json'}
+                               )
+get_sequences.add_fetch({'retmode': 'text', 'rettype': 'gb'}, dependency=sid)
+analyzer2 = workflow.run(get_sequences)
