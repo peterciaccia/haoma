@@ -1,13 +1,12 @@
-# This is a sample Python script.
+"""
+Created by Peter Ciaccia
+"""
+import os
+from pathlib import Path
+from Bio import SeqIO
 
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
-
+from dotenv import load_dotenv
+load_dotenv()
 
 
 class Workspace(object):
@@ -31,17 +30,20 @@ class ImportWizard(object):
     ### Rna-seq ###
     # TODO: Import .fastq
 
-class _ImportWizrd:
+class _ImportWizard_dev:
+
+    def __init__(self):
+        folder = os.getenv('PARTS_REPO')
 
 
 
-
-
-
-
+    def import_seq(self, file_, folder=os.getenv('PARTS_REPO')):
+        path = Path(folder).joinpath(file_)
+        with open(path) as handle:
+            for record in SeqIO.parse(handle, "fasta"):
+                print(record)
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    Importer = _ImportWizard_dev()
+    Importer.import_seq('P_tetR.fa')
