@@ -1,0 +1,11 @@
+- Schemas should contain information about the constraints imposed by the system or design goal.
+- Constraints include:
+  - Which parts are needed, e.g. a promoter, terminator, RBS, etc.
+  - In what order?
+  - register sensitivity scores
+    - 0 to 1?
+    - 1 is strict sensitivity, like CDSs
+    - 0 is no sensitivity, like the location of an origin of replication
+    - an RBS has medium sensitivity
+  Part schemas will consist of arrangements of Parts, which themselves are arranged in class inheritance trees (e.g. Promoter is the parent of Promoter_Sigma70 is the parent of Promoter_pLtetO). Part schemas describe an arrangement of parts, e.g. Sigm70_Promoter, RBS, CDS, Terminator.
+    - 
