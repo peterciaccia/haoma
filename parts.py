@@ -3,25 +3,28 @@ Created on 2021-10-08 by Peter Ciaccia
 
 Part class declarations
 """
-
+import dogma
 
 class Part:
     def __init__(self, seqrecord, material='dna'):
         """
         needs:
 
-        :param sequence:
+        :param seqrecord:
         """
         self.fiveprime_required = False
         self.threeprime_required = False
 
         # TODO: instantiation must check that "Part" on either side is set
-        # Can only be instantiated after additional conditions mets, like end part or adjacent part
+        # Can only be instantiated after additional conditions met, like end part or adjacent part
         self.fiveprime_interface = PartInterface
         self.threeprime_interface = PartInterface
 
         self.material = material
         self.seqrecord = seqrecord
+
+        # TODO: Implement genetic dependencies. Does not consider cofactor dependencies
+        self.dependencies = []
 
 
 class Promoter(Part):
@@ -36,6 +39,7 @@ class Terminator(Part):
     def __init__(self, seqrecord):
         super().__init__(seqrecord)
         self.fiveprime_required = True
+        self.function = dogma.StopTranscription()
 
 
 class Cds(Part):
