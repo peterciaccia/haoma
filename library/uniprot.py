@@ -6,7 +6,6 @@ from library import Base
 from sqlalchemy import Column, String, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 
-
 uniprot_idmapping_path = "external_data/uniprot/knowledgebase/idmapping/README.txt"
 uniprot_idmapping = [
     "UniProtKB-AC",
@@ -37,19 +36,19 @@ class UniprotIdMap(Base):
     __tablename__ = 'uniprot_idmap'
     # __table_args__ = {'mysql_engine':'InnoDB'}
 
-    UniProtKB_AC = Column(String(255), primary_key=True)
-    UniProtKB_ID = Column(String(255))
-    GeneID       = Column(Integer)
-    RefSeq       = Column(String(255))
+    UniProtKB_AC = Column('UniProtKB_AC', String(255), primary_key=True)
+    UniProtKB_ID = Column('UniProtKB_ID', String(255))
+    GeneID       = Column('GeneID', Integer)
+    RefSeq       = Column('RefSeq', String(255))
     GI           = relationship("Uniprot_GI", backref='uniprot_idmap')
     PDB          = relationship("UniprotPdb", backref='uniprot_idmap')
     GO           = relationship("UniprotGO", backref='uniprot_idmap')
-    UniRef100    = Column(String(255))
-    UniRef90     = Column(String(255))
-    UniRef50     = Column(String(255))
-    UniParc      = Column(String(255))
+    UniRef100    = Column('UniRef100', String(255))
+    UniRef90     = Column('UniRef90', String(255))
+    UniRef50     = Column('UniRef50', String(255))
+    UniParc      = Column('UniParc', String(255))
     PIR          = relationship("UniprotPir", backref='uniprot_idmap')
-    NCBI_taxon   = Column(Integer())
+    NCBI_taxon   = Column('NCBI_taxon', Integer())
     MIM          = relationship("UniprotMim", backref='uniprot_idmap')
     UniGene      = relationship("UniprotUniGene", backref='uniprot_idmap')
     PubMed       = relationship("UniprotPubmed", backref='uniprot_idmap')
@@ -106,6 +105,3 @@ class UniprotEnsemblPro(UniprotIdmappingBase):
 
 class UniprotAddtlPubmed(UniprotIdmappingBase):
     __tablename__ = 'uniprot-additional-pubmed'
-
-
-Base.metadata.create_all(engine)
