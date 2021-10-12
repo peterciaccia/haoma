@@ -67,3 +67,33 @@ class PartInterface:
         if fiveprimepart is None and threeprimepart is None:
             raise ValueError(f'A PartInterface instance requires either the five prime part or the three prime part '
             f'not to be {None}')
+
+
+class PartSchema:
+    """
+    Defines part architecture
+    :param system: instance or declaration of System child class
+    :param schema: tuple of Part objects
+    """
+    def __init__(self, schema, system, schema_id=None):
+
+        # system defines the part environment, usually means an organism, e.g. E. coli MG1655
+        if schema_id is None:
+            self.schema_id = 1
+        else:
+            self.schema_id = schema_id
+
+        self._schema = schema
+        self.system = system
+
+    def get_schema(self):
+        return self._schema
+    def set_schema(self, schm):
+        self._schema = schm
+    schema = property(get_schema, set_schema)
+
+    # TODO: Import schema IDs from directory ?
+
+    def get_draft_sequence(self, *args):
+        seqs = ''.join(str(x.seq) for x in args)
+        return seqs

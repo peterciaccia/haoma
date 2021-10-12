@@ -11,7 +11,7 @@ load_dotenv()
 import test_tools
 test_tools.config_log()
 
-class Workspace(object):
+class Workspace:
     """
     A Workspace object captures all relevant information related  to the instance of organism you design.
     :param object:
@@ -24,7 +24,7 @@ class Workspace(object):
         pass
 
 
-class ImportWizard(object):
+class ImportWizard:
     pass
 
     # contains
@@ -41,28 +41,6 @@ class System:
         self.name = name
 
 
-class PartSchema:
-    """
-    Defines part architecture
-    :param system: instance or declaration of System child class
-    :param schema: tuple of Part objects
-    """
-    def __init__(self, schema, system, schema_id=None):
-
-        # system defines the part environment, usually means an organism, e.g. E. coli MG1655
-        if schema_id is None:
-            self.schema_id = 1
-        else:
-            self.schema_id = schema_id
-
-        self.schema = schema
-        self.system = system
-
-    def get_schema(self):
-        return
-
-        # TODO: Import schema IDs from directory ?
-
 class NetworkSchema:
     """
     Defines network motifs for interacting parts
@@ -76,7 +54,6 @@ class PartBuilder:
     """
     def __init__(self):
         pass
-
 
 ####### temp classes
 class ImportWizardDev:
