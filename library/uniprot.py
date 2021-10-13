@@ -2,10 +2,11 @@
 Created on 2021-10-12 by Peter Ciaccia
 """
 
-from library import Base
 from sqlalchemy import Column, String, Integer, ForeignKey
 from sqlalchemy.orm import relationship
+from sqlalchemy.ext.declarative import declarative_base, declared_attr
 
+Base = declarative_base()
 uniprot_idmapping_path = "external_data/uniprot/knowledgebase/idmapping/README.txt"
 uniprot_idmapping = [
     "UniProtKB-AC",
@@ -61,8 +62,12 @@ class UniprotIdMap(Base):
 
 class UniprotIdmappingBase(Base):
 
+    __abstract__ = True
     id = Column(String(), primary_key=True)
-    parent_id = Column(String(255), ForeignKey('UniprotIdMap.UniProtKB_AC'))
+
+    @declared_attr
+    def parent_id(cls):
+        return Column(String(255), ForeignKey('UniprotIdMap.UniProtKB_AC'))
 
 
 # TODO: Replace placeholder tables with foreign keys to other data sources
@@ -105,3 +110,4 @@ class UniprotEnsemblPro(UniprotIdmappingBase):
 
 class UniprotAddtlPubmed(UniprotIdmappingBase):
     __tablename__ = 'uniprot-additional-pubmed'
+
