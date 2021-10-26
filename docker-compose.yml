@@ -16,9 +16,6 @@ services:
       MYSQL_DATABASE: ${DATABASE}
     ports:
       - "3306:3306"
-    volumes:
-      - "./docker/db/config.sh:/docker-entrypoint-initdb.d/config.sh"
-#      - "./docker/db/.my.cnf:/root/.my.cnf"
     entrypoint: ["bin/bash", entrypoint.sh]
     healthcheck:
       test: ["CMD-SHELL", "bash", healthcheck.sh]

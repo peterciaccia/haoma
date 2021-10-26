@@ -32,8 +32,6 @@ VOLUME /var/lib/mysql
 
 COPY docker-entrypoint-local.sh /entrypoint.sh
 COPY healthcheck-local.sh /healthcheck.sh
-#ENTRYPOINT ["/entrypoint.sh"]
-#HEALTHCHECK [CMD /healthcheck.sh]
 EXPOSE 3306 33060 33061
 CMD ["mysqld"]
 
