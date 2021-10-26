@@ -189,6 +189,8 @@ EOF
 		echo
 	fi
 
+# TODO: Add lines from config.sh here. Can take advantage of the mysql alias defined above.
+
 	# Used by healthcheck to make sure it doesn't mistakenly report container
 	# healthy during startup
 	# Put the password into the temporary config file

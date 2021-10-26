@@ -30,10 +30,10 @@ RUN yum install -y https://repo.mysql.com/mysql-community-minimal-release-el7.rp
 
 VOLUME /var/lib/mysql
 
-COPY docker-entrypoint2.sh /entrypoint.sh
-COPY healthcheck2.sh /healthcheck.sh
-ENTRYPOINT ["/entrypoint.sh"]
-HEALTHCHECK CMD /healthcheck.sh
+COPY docker-entrypoint-local.sh /entrypoint.sh
+COPY healthcheck-local.sh /healthcheck.sh
+#ENTRYPOINT ["/entrypoint.sh"]
+#HEALTHCHECK [CMD /healthcheck.sh]
 EXPOSE 3306 33060 33061
 CMD ["mysqld"]
 

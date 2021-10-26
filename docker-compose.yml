@@ -18,8 +18,13 @@ services:
       - "3306:3306"
     volumes:
       - "./docker/db/config.sh:/docker-entrypoint-initdb.d/config.sh"
-      - "./docker/db/start.sh:/docker-entrypoint-initdb.d/start.sh"
 #      - "./docker/db/.my.cnf:/root/.my.cnf"
+    entrypoint: ["bin/bash", entrypoint.sh]
+    healthcheck:
+      test: ["CMD-SHELL", "bash", healthcheck.sh]
+      interval: 5s
+      timeout: 3s
+      retries: 10
 #  adminer:
 #    image: adminer
 #    restart: always
