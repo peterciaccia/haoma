@@ -16,7 +16,7 @@ config = {
     'port': 3306,
     'user': os.getenv('MYSQL_NAME'),
     'password': os.getenv('MYSQL_PASS'),
-    'database': 'haomalib'
+    'database': os.getenv('DATABASE')
 }
 
 db_user = config.get('user')
@@ -25,16 +25,15 @@ db_host = config.get('host')
 db_port = config.get('port')
 db_name = config.get('database')
 
-# db_user = 'root'
-# db_pwd = 'ezekiel23_20!dsfdf'
 
 # specify connection string
 connection_str = f'mysql+pymysql://{db_user}:{db_pwd}@{db_host}:{db_port}/{db_name}'
-# connection_str= f'mysql+pymysql://{db_user}:{db_pwd}@{db_host}:{db_port}/sqlalchemy'
+
 # connect to database
 print(connection_str)
 engine = create_engine(connection_str)
 uniprot.Base.metadata.create_all(bind=engine)
+
 # connection = engine.connect()
 # # pull metadata of a table
 # metadata = db.MetaData(bind=engine)
@@ -42,7 +41,3 @@ uniprot.Base.metadata.create_all(bind=engine)
 
 # Session = sessionmaker(bind=engine)
 # session = Session()
-
-
-
-# test_table = metadata.tables['test_table']

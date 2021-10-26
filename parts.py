@@ -6,6 +6,7 @@ Part class declarations
 import dogma
 import log.logger
 
+
 class Part:
     def __init__(self, seqrecord, material='dna'):
         """
