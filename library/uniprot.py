@@ -41,9 +41,9 @@ class UniprotIdMap(Base):
     UniProtKB_ID = Column('UniProtKB_ID', String(255))
     GeneID       = Column('GeneID', Integer)
     RefSeq       = Column('RefSeq', String(255))
-    GI           = relationship("Uniprot_GI", backref='uniprot_idmap')
-    PDB          = relationship("UniprotPdb", backref='uniprot_idmap')
+    GI           = relationship("UniprotGI", backref='uniprot_idmap')
     GO           = relationship("UniprotGO", backref='uniprot_idmap')
+    PDB          = relationship("UniprotPdb", backref='uniprot_idmap')
     UniRef100    = Column('UniRef100', String(255))
     UniRef90     = Column('UniRef90', String(255))
     UniRef50     = Column('UniRef50', String(255))
@@ -63,12 +63,11 @@ class UniprotIdMap(Base):
 class UniprotIdmappingBase(Base):
 
     __abstract__ = True
-    id = Column(String(), primary_key=True)
+    id = Column(String(255), primary_key=True)
 
     @declared_attr
     def parent_id(cls):
-        return Column(String(255), ForeignKey('UniprotIdMap.UniProtKB_AC'))
-
+        return Column(String(255), ForeignKey('uniprot_idmap.UniProtKB_AC'))
 
 # TODO: Replace placeholder tables with foreign keys to other data sources
 
