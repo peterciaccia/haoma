@@ -13,7 +13,7 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASS: ${MYSQL_PASS}
-      DATABASE: ${DATABASE}
+      MYSQL_DATABASE: ${DATABASE}
     ports:
       - "3306:3306"
     volumes:
