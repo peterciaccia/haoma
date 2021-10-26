@@ -72,41 +72,40 @@ class UniprotIdmappingBase(Base):
 # TODO: Replace placeholder tables with foreign keys to other data sources
 
 class UniprotGI(UniprotIdmappingBase):
-    __tablename__ = 'uniprot-gi'
+    __tablename__ = 'uniprot_gi'
 
 class UniprotGO(UniprotIdmappingBase):
-    __tablename__ = 'uniprot-go'
+    __tablename__ = 'uniprot_go'
 
 class UniprotPdb(UniprotIdmappingBase):
-    __tablename__ = 'uniprot-pdb'
+    __tablename__ = 'uniprot_pdb'
 
 class UniprotPir(UniprotIdmappingBase):
-    __tablename__ = 'uniprot-pir'
+    __tablename__ = 'uniprot_pir'
 
 class UniprotMim(UniprotIdmappingBase):
-    __tablename__ = 'uniprot-mim'
+    __tablename__ = 'uniprot_mim'
 
 class UniprotUniGene(UniprotIdmappingBase):
-    __tablename__ = 'uniprot-unigene'
+    __tablename__ = 'uniprot_unigene'
 
 class UniprotPubmed(UniprotIdmappingBase):
-    __tablename__ = 'uniprot-pubmed'
+    __tablename__ = 'uniprot_pubmed'
 
 class UniprotEmbl(UniprotIdmappingBase):
-    __tablename__ = 'uniprot-embl'
+    __tablename__ = 'uniprot_embl'
 
 class UniprotEmblCds(UniprotIdmappingBase):
-    __tablename__ = 'uniprot-emblcds'
+    __tablename__ = 'uniprot_emblcds'
 
 class UniprotEnsembl(UniprotIdmappingBase):
-    __tablename__ = 'uniprot-ensembl'
+    __tablename__ = 'uniprot_ensembl'
 
 class UniprotEnsemblTrs(UniprotIdmappingBase):
-    __tablename__ = 'uniprot-ensembltrs'
+    __tablename__ = 'uniprot_ensembltrs'
 
 class UniprotEnsemblPro(UniprotIdmappingBase):
-    __tablename__ = 'uniprot-ensemblpro'
+    __tablename__ = 'uniprot_ensemblpro'
 
 class UniprotAddtlPubmed(UniprotIdmappingBase):
-    __tablename__ = 'uniprot-additional-pubmed'
-
+    __tablename__ = 'uniprot_additional_pubmed'
