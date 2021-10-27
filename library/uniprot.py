@@ -1,16 +1,19 @@
 """
 Created on 2021-10-12 by Peter Ciaccia
 """
+import os
 
+import pandas as pd
 from sqlalchemy import Column, String, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base, declared_attr
 
+
 Base = declarative_base()
 uniprot_idmapping_path = "external_data/uniprot/knowledgebase/idmapping/README.txt"
 uniprot_idmapping = [
-    "UniProtKB-AC",
-    "UniProtKB-ID",
+    "UniProtKB_AC",
+    "UniProtKB_ID",
     "GeneID", # (EntrezGene)
     "RefSeq",
     "GI",
@@ -21,16 +24,16 @@ uniprot_idmapping = [
     "UniRef50",
     "UniParc",
     "PIR",
-    "NCBI-taxon",
+    "NCBI_taxon",
     "MIM",
     "UniGene",
     "PubMed",
     "EMBL",
-    "EMBL-CDS",
+    "EMBL_CDS",
     "Ensembl",
     "Ensembl_TRS",
     "Ensembl_PRO",
-    "Additional PubMed",
+    "Additional_PubMed",
 ]
 
 class UniprotIdMap(Base):
@@ -41,7 +44,7 @@ class UniprotIdMap(Base):
     UniProtKB_ID = Column('UniProtKB_ID', String(255))
     GeneID       = Column('GeneID', Integer)
     RefSeq       = Column('RefSeq', String(255))
-    GI           = relationship("UniprotGI", backref='uniprot_idmap')
+    GI           = relationship("UniprotGI", primaryjoin='UniprotIdMap.GI==UniprotGI.GI', backref='uniprot_idmap')
     GO           = relationship("UniprotGO", backref='uniprot_idmap')
     PDB          = relationship("UniprotPdb", backref='uniprot_idmap')
     UniRef100    = Column('UniRef100', String(255))
@@ -60,8 +63,8 @@ class UniprotIdMap(Base):
     Ensembl_PRO  = relationship("UniprotEnsemblPro", backref='uniprot_idmap')
     Additional_PubMed = relationship("UniprotAddtlPubmed", backref='uniprot_idmap')
 
-class UniprotIdmappingBase(Base):
 
+class UniprotIdmappingBase(Base):
     __abstract__ = True
     id = Column(String(255), primary_key=True)
 
@@ -69,43 +72,74 @@ class UniprotIdmappingBase(Base):
     def parent_id(cls):
         return Column(String(255), ForeignKey('uniprot_idmap.UniProtKB_AC'))
 
-# TODO: Replace placeholder tables with foreign keys to other data sources
 
+# TODO: Replace placeholder tables with foreign keys to other data sources
 class UniprotGI(UniprotIdmappingBase):
     __tablename__ = 'uniprot_gi'
+    # TODO: Is the below line necessary?
+    GI_index = Column('GI_index', Integer, primary_key=True)
+    GI = Column('UniprotGI', Integer)
+
+class GIAssociation(Base):
+    __tablename__ = 'association_GI'
+
+    UniProtKB_AC = Column('UniProtKB_AC', ForeignKey('UniProtKB_AC'), primary_key=True)
+    GI = Column('GI', ForeignKey('GI'), primary_key=True)
 
 class UniprotGO(UniprotIdmappingBase):
     __tablename__ = 'uniprot_go'
 
+
 class UniprotPdb(UniprotIdmappingBase):
     __tablename__ = 'uniprot_pdb'
+
 
 class UniprotPir(UniprotIdmappingBase):
     __tablename__ = 'uniprot_pir'
 
+
 class UniprotMim(UniprotIdmappingBase):
     __tablename__ = 'uniprot_mim'
+
 
 class UniprotUniGene(UniprotIdmappingBase):
     __tablename__ = 'uniprot_unigene'
 
+
 class UniprotPubmed(UniprotIdmappingBase):
     __tablename__ = 'uniprot_pubmed'
+
 
 class UniprotEmbl(UniprotIdmappingBase):
     __tablename__ = 'uniprot_embl'
 
+
 class UniprotEmblCds(UniprotIdmappingBase):
     __tablename__ = 'uniprot_emblcds'
+
 
 class UniprotEnsembl(UniprotIdmappingBase):
     __tablename__ = 'uniprot_ensembl'
 
+
 class UniprotEnsemblTrs(UniprotIdmappingBase):
     __tablename__ = 'uniprot_ensembltrs'
+
 
 class UniprotEnsemblPro(UniprotIdmappingBase):
     __tablename__ = 'uniprot_ensemblpro'
 
+
 class UniprotAddtlPubmed(UniprotIdmappingBase):
     __tablename__ = 'uniprot_additional_pubmed'
+
+
+def load_idmapping(engine, debug=False):
+    if debug:
+        filename = "idmapping_selected.tab.example"
+    else:
+        raise NotImplementedError("A local copy is not stored; may be better to store remotely")
+    data_path = os.path.join(os.getenv('EXTERNAL_DATA_DIR'), 'uniprot/knowledgebase/idmapping/', filename)
+    df = pd.read_csv(data_path, delimiter='\t', names=uniprot_idmapping)
+
+    df.to_sql(con=engine, index_label='UniProtKB_AC', name=UniprotIdMap.__tablename__, if_exists='replace')
