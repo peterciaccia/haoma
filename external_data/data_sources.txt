@@ -1,0 +1,4 @@
+# crossrefs Refseq protein ID to UniprotKb-Ac
+https://ftp.ncbi.nlm.nih.gov/refseq/uniprotkb/gene_refseq_uniprotkb_collab.gz
+
+#

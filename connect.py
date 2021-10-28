@@ -4,10 +4,9 @@ Connects to mysql container when imported
 """
 
 import os
-from sqlalchemy import create_engine
-
-from library import uniprot
+from sqlalchemy import create_engine, MetaData
 from dotenv import load_dotenv
+
 
 load_dotenv()
 
@@ -36,10 +35,10 @@ engine = create_engine(connection_str)
 
 # idmapping
 
-# connection = engine.connect()
-# # pull metadata of a table
-# metadata = db.MetaData(bind=engine)
-# metadata.reflect(only=['test_table'])
+connection = engine.connect()
+# pull metadata of a table
+metadata = MetaData(bind=engine)
+metadata.reflect()
 
 # Session = sessionmaker(bind=engine)
 # session = Session()
