@@ -4,3 +4,4 @@ logs/
 .idea/
 scratch/
 .DS_Store
+external_data/ncbi/**
