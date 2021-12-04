@@ -49,6 +49,7 @@ association_table = Table('association', Base.metadata,
                           Column('RefSeq', ForeignKey('refseq.refseq'), primary_key=True)
 )
 
+
 class UniprotIdMap(Base):
     __tablename__ = 'uniprot_idmap'
     # __table_args__ = {'schema': 'haomalib'}
@@ -56,7 +57,11 @@ class UniprotIdMap(Base):
     UniProtKB_AC = Column('UniProtKB_AC', String(16), primary_key=True)
     UniProtKB_ID = Column('UniProtKB_ID', String(16))
     GeneID       = Column('GeneID', Integer)
-    RefSeq       = relationship("RefSeq", secondary=association_table, backref='uniprot_idmap')
+    RefSeq       = relationship("RefSeq",
+                                secondary=association_table,
+                                backref='uniprot_idmap',
+                                cascade="all, delete"
+                                )
 
     # GI           = relationship("GI", primaryjoin='UniprotIdMap.GI==UniprotGI.GI', backref='uniprot_idmap')
     # GO           = relationship("UniprotGO", backref='uniprot_idmap')
