@@ -7,21 +7,17 @@ import os
 from pathlib import Path
 import logging
 from datetime import datetime
+from dotenv import load_dotenv
+load_dotenv()
+
 
 # Writes logs for most files except tests
-def config_log(logging_level=logging.DEBUG):
+def get_log_path():
     log_dir = Path(os.getenv('PROJECT_LOG_DIR'))
     now = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
     log_name = Path(now)
     log_path = log_dir / log_name.with_suffix('.log')
-    logging.basicConfig(filename=log_path,
-                        filemode="w",
-                        level=logging_level,
-                        format='%(asctime)s,%(msecs)d %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',
-                        datefmt='%Y-%m-%d:%H:%M:%S'
-                        )
-    logging.info(str(datetime.now()))
-    return
+    return log_path
 
 # Writes logs for test scripts
 def config_test_log(filename, logging_level=logging.DEBUG):

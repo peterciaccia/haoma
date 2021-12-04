@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 import test_tools
-test_tools.config_log()
+test_tools.get_log_path()
 
 class Workspace:
     """
