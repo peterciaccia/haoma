@@ -33,7 +33,7 @@ def chunk_timer():
         logger.info(f'timing chunksize = {size}')
         chunklist = refseq.read(debug=True, chunksize=size)
         starttime = time.time()
-        refseq.repopulate(Session(), chunklist, engine, debug=True)
+        refseq.repopulate(chunklist, engine, debug=True)
         endtime = time.time()
         elapsed = endtime-starttime
         logger.debug(f'elapsed time for chunksize {size}: {elapsed:.8f}')

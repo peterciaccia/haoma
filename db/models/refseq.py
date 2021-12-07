@@ -6,6 +6,7 @@ from sqlalchemy import Column, String
 import os
 
 from db.base import Base
+from db import Session
 from db.connect import get_size
 from log import log_utils
 logger = log_utils.get_logger(module=__name__)
@@ -56,7 +57,7 @@ def read(debug=False, chunksize=None):
     return chunks
 
 
-def repopulate(s, chunklist, eng, debug=False, repopulate=False):
+def repopulate(chunklist, eng, debug=False, repopulate=False):
     """
 
     :param chunklist: list of pandas dfs
@@ -65,20 +66,18 @@ def repopulate(s, chunklist, eng, debug=False, repopulate=False):
     :param repopulate:
     :return:
     """
+
     to_deletes = [RefSeq_to_Uniprot.__table__]
 
     Base.metadata.drop_all(bind=eng, tables=to_deletes)
-
-    # gets table name
-    tab = RefSeq_to_Uniprot.__table__
     Base.metadata.create_all(bind=eng, checkfirst=True)
-    # DeferredReflection.prepare(eng)
     get_size(RefSeq_to_Uniprot, verbose=True)
     for df in chunklist:
         rows = [RefSeq_to_Uniprot(RefSeq_id=row['RefSeq'], UniProtKB_AC=row['UniProtKB_AC'])
                 for i, row in df.iterrows()]
-        s.add_all(rows)
-        s.commit()
+        with Session() as s:
+            s.add_all(rows)
+            s.commit()
     # s.close_all()
     get_size(RefSeq_to_Uniprot, verbose=True)
     # for i, row in df.iterrows():
