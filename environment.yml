@@ -1,3 +1,4 @@
+# TODO: update environment.yml to reflect updates dependencies
 name: Haoma
 channels:
   - conda-forge

@@ -2,7 +2,6 @@
 
 """
 
-
 class StartTranscription:
 
     def __init__(self):
