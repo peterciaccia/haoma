@@ -24,4 +24,5 @@ logger = logging.getLogger(__name__)
 
 
 if __name__ == '__main__':
+    # TODO: Implement this test
     connect.get_size(refseq.RefSeq_to_Uniprot, verbose=True)
