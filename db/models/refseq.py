@@ -2,14 +2,11 @@
 created by Peter Ciaccia on 10/28/21
 """
 import pandas as pd
-from sqlalchemy import Table, Column, String, ForeignKey, insert, update
-from sqlalchemy.orm import relationship
-from sqlalchemy.dialects.mysql import insert, dialect
-from sqlalchemy.ext.declarative import declarative_base, DeferredReflection
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy import Column, String
 import os
 
-from library.connect import Base
+from db.base import Base
+from db.connect import get_size
 from log import log_utils
 logger = log_utils.get_logger(module=__name__)
 
@@ -18,7 +15,7 @@ pd.set_option('display.max_rows', 500)
 pd.set_option('display.max_columns', 500)
 pd.set_option('display.width', 1000)
 
-class RefSeq(Base, DeferredReflection):
+class RefSeq_to_Uniprot(Base):
     __tablename__ = 'refseq_to_uniprot'
 
     RefSeq_id = Column('RefSeq_id', String(16), primary_key=True)
@@ -29,19 +26,19 @@ class RefSeq(Base, DeferredReflection):
 
 
 def read(debug=False, chunksize=None):
-    default_chunksize = 10000
-    nrows = 2500000
-    path_from_data_root = "ncbi/refseq/uniprotkb/gene_refseq_uniprotkb_collab"
-    if debug:
-        if chunksize is not None:
-            logger.debug(f'chunk size set to {chunksize}')
+    """
 
-        else:
-            logger.debug(f'No chunk size specified; using default value {default_chunksize}')
-            chunksize = default_chunksize
-    else:
-        nrows = None
-        raise NotImplementedError()
+    :param debug:
+    :param chunksize:
+    :return:
+    """
+    nrows = 250000
+    default_chunksize = 100000
+    path_from_data_root = "ncbi/refseq/uniprotkb/gene_refseq_uniprotkb_collab"
+    if chunksize is None:
+        chunksize = default_chunksize
+    if debug:
+        logger.debug(f'chunk size set to {chunksize}')
 
     data_path = os.path.join(os.getenv('EXTERNAL_DATA_DIR'), path_from_data_root)
     chunks = []
@@ -59,41 +56,31 @@ def read(debug=False, chunksize=None):
     return chunks
 
 
+def repopulate(s, chunklist, eng, debug=False, repopulate=False):
+    """
 
-def get_size(session, verbose=False):
-    num_rows = session.query(RefSeq).count()
-    if verbose:
-        print(f"Rows:\t{num_rows}")
-    return num_rows
+    :param chunklist: list of pandas dfs
+    :param eng:
+    :param debug:
+    :param repopulate:
+    :return:
+    """
+    to_deletes = [RefSeq_to_Uniprot.__table__]
 
-def repopulate(chunklist, eng, debug=False, repopulate=False):
-
-    # stmt_list = [insert(RefSeq).values(RefSeq_id=row['RefSeq'], UniProtKB_AC=row['UniProtKB_AC'])
-    #                 .returning(RefSeq.RefSeq_id)
-    #                 .compile(dialect=dialect())
-    #             for i, row in df.iterrows()
-    #             ]
-    # obj_list = [RefSeq(RefSeq_id=row['RefSeq'], UniProtKB_AC=row['UniProtKB_AC'])
-    #            for i, row in df.iterrows()
-    #            ]
-    # gets table name
-
-    to_deletes = [RefSeq.__table__]
     Base.metadata.drop_all(bind=eng, tables=to_deletes)
 
     # gets table name
-    tab = RefSeq.__table__
-    print(tab)
+    tab = RefSeq_to_Uniprot.__table__
     Base.metadata.create_all(bind=eng, checkfirst=True)
-    DeferredReflection.prepare(eng)
-    Session = sessionmaker(bind=eng)
-    s = Session()
-    get_size(s, verbose=True)
+    # DeferredReflection.prepare(eng)
+    get_size(RefSeq_to_Uniprot, verbose=True)
     for df in chunklist:
-        rows = [RefSeq(RefSeq_id=row['RefSeq'], UniProtKB_AC=row['UniProtKB_AC']) for i, row in df.iterrows()]
+        rows = [RefSeq_to_Uniprot(RefSeq_id=row['RefSeq'], UniProtKB_AC=row['UniProtKB_AC'])
+                for i, row in df.iterrows()]
         s.add_all(rows)
         s.commit()
-
+    # s.close_all()
+    get_size(RefSeq_to_Uniprot, verbose=True)
     # for i, row in df.iterrows():
     #     stmt = insert(RefSeq).values(RefSeq_id=row['RefSeq'], UniProtKB_AC=row['UniProtKB_AC'])\
     #         .returning(RefSeq.RefSeq_id)\

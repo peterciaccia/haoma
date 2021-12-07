@@ -3,15 +3,8 @@ Created 2021-10-12
 Connects to mysql container when imported
 """
 import logging
-import os
-from sqlalchemy.ext.declarative import declarative_base, DeferredReflection
-# from sqlalchemy.ext.automap import automap_base
-# from library.refseq import RefSeq_to_Uniprot
-
-logging.debug('Creating declarative base instance')
-Base = declarative_base()
-
-
+from db import Session
+from db.base import Base
 
 def stats(eng):
     """
@@ -22,14 +15,13 @@ def stats(eng):
     # metadata_obj = MetaData()
     # metadata_obj.reflect(bind=eng)
     # print([table.name for table in metadata_obj.sorted_tables])
-    Base = declarative_base(bind=eng)
     pass
     # meta = uniprot.Base.metadata
     print(Base.metadata)
     return Base.metadata
 
 
-def get_size(session, Table_Declaration, verbose=False):
+def get_size(Table_Declaration, verbose=False):
     """
     Returns number of rows in Table
     :param session: sqlalchemy session
@@ -37,7 +29,9 @@ def get_size(session, Table_Declaration, verbose=False):
     :param verbose:
     :return:
     """
-    num_rows = session.query(Table_Declaration).count()
+
+    with Session() as s:
+        num_rows = s.query(Table_Declaration).count()
     if verbose:
         print(f"Rows:\t{num_rows}")
     return num_rows

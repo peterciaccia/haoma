@@ -6,10 +6,8 @@ import os
 import pandas as pd
 from sqlalchemy import Table, Column, String, Integer, ForeignKey
 from sqlalchemy.orm import relationship
-from sqlalchemy.ext.declarative import declarative_base, declared_attr
 
-
-Base = declarative_base()
+from db.base import Base
 
 uniprot_idmapping_path = "external_data/uniprot/knowledgebase/idmapping/README.txt"
 uniprot_idmapping = [
@@ -47,7 +45,7 @@ uniprot_idmapping = [
 association_table = Table('association', Base.metadata,
                           Column('UniProtKB_AC', ForeignKey('uniprot_idmap.UniProtKB_AC'), primary_key=True),
                           Column('RefSeq', ForeignKey('refseq.refseq'), primary_key=True)
-)
+                          )
 
 
 class UniprotIdMap(Base):
@@ -178,7 +176,6 @@ class AssociationPIR(AssociationBase):
 
 """
 ################################################### Debugging
-
 
 
 # .................

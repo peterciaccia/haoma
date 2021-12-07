@@ -1,6 +1,7 @@
 """
 Created by Peter Ciaccia
 """
+
 import os
 import logging
 from dotenv import load_dotenv
@@ -29,7 +30,8 @@ connection_str = f'mysql+pymysql://{db_user}:{db_pwd}@{db_host}:{db_port}/{db_na
 logging.debug(f'MySQL Connection string:\t{connection_str}')
 
 # creates engine
-engine = create_engine(connection_str)
+# TODO: update create_engine with future=True flag and test functionality
+engine = create_engine(connection_str, echo=True)
 DeferredReflection.prepare(engine)
 
 # Constructs Session class declaration
