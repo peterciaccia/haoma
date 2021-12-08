@@ -8,6 +8,9 @@ from sqlalchemy import Table, Column, String, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 
 from db.base import Base
+from db import Session
+from db.models.refseq import RefSeq_to_Uniprot
+
 
 uniprot_idmapping_path = "external_data/uniprot/knowledgebase/idmapping/README.txt"
 uniprot_idmapping = [
@@ -42,11 +45,6 @@ uniprot_idmapping = [
     "RefSeq"
 ]
 
-association_table = Table('association', Base.metadata,
-                          Column('UniProtKB_AC', ForeignKey('uniprot_idmap.UniProtKB_AC'), primary_key=True),
-                          Column('RefSeq', ForeignKey('refseq.refseq'), primary_key=True)
-                          )
-
 
 class UniprotIdMap(Base):
     __tablename__ = 'uniprot_idmap'
@@ -55,11 +53,12 @@ class UniprotIdMap(Base):
     UniProtKB_AC = Column('UniProtKB_AC', String(16), primary_key=True)
     UniProtKB_ID = Column('UniProtKB_ID', String(16))
     GeneID       = Column('GeneID', Integer)
-    RefSeq       = relationship("RefSeq",
-                                secondary=association_table,
-                                backref='uniprot_idmap',
-                                cascade="all, delete"
-                                )
+    RefSeq = Column("RefSeq", String(16))
+    # RefSeq       = relationship("RefSeq",
+    #                             # secondary=UniprotKB_AC_link_RefSeq,
+    #                             backref='uniprot_idmap',
+    #                             cascade="all, delete"
+    #                             )
 
     # GI           = relationship("GI", primaryjoin='UniprotIdMap.GI==UniprotGI.GI', backref='uniprot_idmap')
     # GO           = relationship("UniprotGO", backref='uniprot_idmap')
@@ -80,6 +79,17 @@ class UniprotIdMap(Base):
     # Ensembl_PRO  = relationship("EnsemblPro", backref='uniprot_idmap')
     # Additional_PubMed = relationship("AddtlPubmed", backref='uniprot_idmap')
 
+    def __repr__(self):
+        return f"UniprotIdMap(" \
+               f"UniProtKB_AC={self.UniProtKB_AC!r}, " \
+               f"RefSeq={self.RefSeq!r})"
+
+        return f"UniprotIdMap(" \
+               f"UniProtKB_AC={self.UniProtKB_AC!r}, " \
+               f"UniProtKB_ID={self.UniProtKB_ID!r}, " \
+               f"GeneID={self.GeneID!r}, " \
+               f"RefSeq={self.RefSeq!r})"
+
 
 class UniprotIdmappingBase(Base):
     __abstract__ = True
@@ -90,10 +100,17 @@ class UniprotIdmappingBase(Base):
     #     return Column(String(16), ForeignKey('uniprot_idmap.UniProtKB_AC'))
 
 
-class RefSeq(UniprotIdmappingBase):
-    __tablename__ = 'refseq'
-    refseq = Column(String(16), primary_key=True)
-    UniProtKB_AC = relationship("UniProtKB_AC", secondary=association_table)
+# class RefSeq(UniprotIdmappingBase):
+#     __tablename__ = 'refseq'
+#     refseq = Column(String(16), primary_key=True)
+#     UniProtKB_AC = relationship("UniProtKB_AC", secondary=UniprotKB_AC_link_RefSeq)
+
+
+# class UniprotKB_AC_link_RefSeq(Base):
+#     __tablename__ = 'Uniprot2RefSeq'
+
+    # UniprotKB_AC = Column(String(16), ForeignKey(UniprotIdMap.UniProtKB_AC), primary_key=True)
+    # RefSeq = Column(String(16), ForeignKey(RefSeq_to_Uniprot.RefSeq_id), primary_key=True)
 
 """
 # TODO: Replace placeholder tables with foreign keys to other data sources
@@ -175,18 +192,42 @@ class AssociationPIR(AssociationBase):
     pdb = Column('PIR', ForeignKey('uniprot_pdb.pir'), primary_key=True)
 
 """
+
 ################################################### Debugging
 
 
 # .................
 # Functions
 
-def load_idmapping(debug=False):
+def split_multiple(UniProtKB_AC, refSeq_list):
+    rows = [UniprotIdMap(UniProtKB_AC=UniProtKB_AC, RefSeq=refSeq)
+            for refSeq in refSeq_list.split('; ')
+            ]
+    return rows
+
+    # rows = [RefSeq_to_Uniprot(RefSeq_id=row['RefSeq'], UniProtKB_AC=row['UniProtKB_AC'])
+    #         for i, row in df.iterrows()]
+    # with Session() as s:
+    #     s.add_all(rows)
+    # s.commit()
+
+def parse(chunksize=100000, debug=False):
     if debug:
         filename = "idmapping.debug_01.txt"
     else:
         raise NotImplementedError("A local copy is not stored; may be better to store remotely")
-    data_path = os.path.join(os.getenv('EXTERNAL_DATA_DIR'), 'uniprot/knowledgebase/idmapping/', filename)
-    df = pd.read_csv(data_path, delimiter='\t', names=uniprot_idmapping)
+    data_path = os.path.join(os.getenv('EXTERNAL_DATA_DIR'),'uniprot/knowledgebase/idmapping/', filename)
+    reader = pd.read_csv(data_path,
+                         chunksize=chunksize,
+                         delimiter='\t',
+                         names=uniprot_idmapping,
+                         keep_default_na=False
+                         )
+    for df in reader:
+        rows = [row for sublist in
+                [split_multiple(x, y) for x, y in zip(df['UniProtKB_AC'], df['RefSeq'])]
+                for row in sublist]
+        print(rows)
+        # zip nested GI numbers, etc.
 
-    print(df)
+

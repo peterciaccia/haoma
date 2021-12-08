@@ -1,5 +1,5 @@
 """
-This script is for testing various components of main.py
+This script is for testing various components of app.py
 """
 
 import logging as log
@@ -7,11 +7,11 @@ import os
 
 import parts
 import test_tools
-import main
+import app
 
 test_tools.config_test_log(__file__)
 
-Importer = main.ImportWizardDev()
+Importer = app.ImportWizardDev()
 Importer.import_seq('P_tetR.fa')
 Importer.import_seq('eyfp.fa')
 Importer.import_seq('L3S2P21.fa')
@@ -26,7 +26,7 @@ Cds = parts.Cds
 Terminator = parts.Terminator
 partschema = (Promoter, Cds, Terminator)
 
-schema = parts.PartSchema(partschema, main.System('Escherichia coli'))
+schema = parts.PartSchema(partschema, app.System('Escherichia coli'))
 seq = schema.get_draft_sequence(recipe1)
 print(seq)
 # parts.PartInterface()

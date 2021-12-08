@@ -1,20 +1,15 @@
 """
 created by Peter Ciaccia on 10/28/21
 """
-import pandas as pd
 from sqlalchemy import Column, String
 import os
+import pandas as pd
 
 from db.base import Base
 from db import Session
 from db.connect import get_size
 from log import log_utils
 logger = log_utils.get_logger(module=__name__)
-
-# pandas options
-pd.set_option('display.max_rows', 500)
-pd.set_option('display.max_columns', 500)
-pd.set_option('display.width', 1000)
 
 class RefSeq_to_Uniprot(Base):
     __tablename__ = 'refseq_to_uniprot'
@@ -73,6 +68,7 @@ def repopulate(chunklist, eng, debug=False, repopulate=False):
     Base.metadata.create_all(bind=eng, checkfirst=True)
     get_size(RefSeq_to_Uniprot, verbose=True)
     for df in chunklist:
+        # TODO: List comprehension without iterrows() call
         rows = [RefSeq_to_Uniprot(RefSeq_id=row['RefSeq'], UniProtKB_AC=row['UniProtKB_AC'])
                 for i, row in df.iterrows()]
         with Session() as s:

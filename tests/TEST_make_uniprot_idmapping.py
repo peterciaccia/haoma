@@ -6,6 +6,7 @@ Findings: Chunk size of 10,000 was faster than chunk size of 100,000
 
 import time
 
+
 # internal modules
 import logging
 import test_tools
@@ -18,25 +19,11 @@ logging.basicConfig(filename=test_tools.get_log_path(),
                     # force=True
                     )
 logger = logging.getLogger(__name__)
-from db import engine
-from db.models import refseq
 
+from db.models import uniprot
 
-def chunk_timer():
-    chunksize_list = [
-        10000,
-        100000,
-    ]
-
-    for size in chunksize_list:
-        logger.info(f'timing chunksize = {size}')
-        chunklist = refseq.read(debug=True, chunksize=size)
-        starttime = time.time()
-        refseq.repopulate(chunklist, engine, debug=True)
-        endtime = time.time()
-        elapsed = endtime-starttime
-        logger.debug(f'elapsed time for chunksize {size}: {elapsed:.8f}')
+uniprot.parse(debug=True)
 
 
 if __name__ == '__main__':
-    chunk_timer()
+    pass
