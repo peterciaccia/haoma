@@ -38,13 +38,28 @@ uniprot_idmapping = [
     "Additional_PubMed",
 ]
 # TODO: Delete this after debugging
-uniprot_idmapping = [
-    "UniProtKB_AC",
-    "UniProtKB_ID",
-    "GeneID",
-    "RefSeq"
-]
+# uniprot_idmapping = [
+#     "UniProtKB_AC",
+#     "UniProtKB_ID",
+#     "GeneID",
+#     "RefSeq"
+# ]
 
+nested_ids = [
+    'RefSeq',
+    'GO',
+    'PDB',
+    'PIR',
+    'MIM',
+    'UniGene',
+    'PubMed',
+    'EMBL',
+    'EMBL_CDS',
+    'Ensembl',
+    'Ensembl_TRS',
+    'Ensembl_PRO',
+    'Additional_PubMed',
+]
 
 class UniprotIdMap(Base):
     __tablename__ = 'uniprot_idmap'
@@ -53,7 +68,7 @@ class UniprotIdMap(Base):
     UniProtKB_AC = Column('UniProtKB_AC', String(16), primary_key=True)
     UniProtKB_ID = Column('UniProtKB_ID', String(16))
     GeneID       = Column('GeneID', Integer)
-    RefSeq = Column("RefSeq", String(16))
+    # RefSeq = Column("RefSeq", String(16))
     # RefSeq       = relationship("RefSeq",
     #                             # secondary=UniprotKB_AC_link_RefSeq,
     #                             backref='uniprot_idmap',
@@ -63,12 +78,12 @@ class UniprotIdMap(Base):
     # GI           = relationship("GI", primaryjoin='UniprotIdMap.GI==UniprotGI.GI', backref='uniprot_idmap')
     # GO           = relationship("UniprotGO", backref='uniprot_idmap')
     # PDB          = relationship("UniprotPdb", backref='uniprot_idmap')
-    # UniRef100    = Column('UniRef100', String(24))
-    # UniRef90     = Column('UniRef90', String(24))
-    # UniRef50     = Column('UniRef50', String(24))
-    # UniParc      = Column('UniParc', String(16))
+    UniRef100    = Column('UniRef100', String(24))
+    UniRef90     = Column('UniRef90', String(24))
+    UniRef50     = Column('UniRef50', String(24))
+    UniParc      = Column('UniParc', String(16))
     # PIR          = relationship("UniprotPir", backref='uniprot_idmap')
-    # NCBI_taxon   = Column('NCBI_taxon', Integer())
+    NCBI_taxon   = Column('NCBI_taxon', Integer())
     # MIM          = relationship("UniprotMim", backref='uniprot_idmap')
     # UniGene      = relationship("UniGene", backref='uniprot_idmap')
     # PubMed       = relationship("Pubmed", backref='uniprot_idmap')
@@ -80,10 +95,6 @@ class UniprotIdMap(Base):
     # Additional_PubMed = relationship("AddtlPubmed", backref='uniprot_idmap')
 
     def __repr__(self):
-        return f"UniprotIdMap(" \
-               f"UniProtKB_AC={self.UniProtKB_AC!r}, " \
-               f"RefSeq={self.RefSeq!r})"
-
         return f"UniprotIdMap(" \
                f"UniProtKB_AC={self.UniProtKB_AC!r}, " \
                f"UniProtKB_ID={self.UniProtKB_ID!r}, " \
@@ -199,9 +210,9 @@ class AssociationPIR(AssociationBase):
 # .................
 # Functions
 
-def split_multiple(UniProtKB_AC, refSeq_list):
+def _split_multiple(UniProtKB_AC, nested_id_str):
     rows = [UniprotIdMap(UniProtKB_AC=UniProtKB_AC, RefSeq=refSeq)
-            for refSeq in refSeq_list.split('; ')
+            for refSeq in nested_id_str.split('; ')
             ]
     return rows
 
@@ -211,9 +222,20 @@ def split_multiple(UniProtKB_AC, refSeq_list):
     #     s.add_all(rows)
     # s.commit()
 
+
+def _expand_nested_id_rows(df):
+    for col in nested_ids:
+        rows = [row for sublist in
+                [_split_multiple(x, y) for x, y in zip(df['UniProtKB_AC'], df[col])]
+                for row in sublist]
+        for row in rows:
+            print(row)
+
+
 def parse(chunksize=100000, debug=False):
+
     if debug:
-        filename = "idmapping.debug_01.txt"
+        filename = "idmapping.debug_03.txt"
     else:
         raise NotImplementedError("A local copy is not stored; may be better to store remotely")
     data_path = os.path.join(os.getenv('EXTERNAL_DATA_DIR'),'uniprot/knowledgebase/idmapping/', filename)
@@ -224,10 +246,12 @@ def parse(chunksize=100000, debug=False):
                          keep_default_na=False
                          )
     for df in reader:
-        rows = [row for sublist in
-                [split_multiple(x, y) for x, y in zip(df['UniProtKB_AC'], df['RefSeq'])]
-                for row in sublist]
-        print(rows)
+        _expand_nested_id_rows(df)
+        # rows = [row for sublist in
+        #         [_split_multiple(x, y) for x, y in zip(df['UniProtKB_AC'], df['RefSeq'])]
+        #         for row in sublist]
+        # for row in rows:
+        #     print(row)
         # zip nested GI numbers, etc.
 
 
