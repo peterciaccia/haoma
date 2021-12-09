@@ -22,8 +22,11 @@ logger = logging.getLogger(__name__)
 
 from db.models import uniprot
 
+starttime = time.time()
 uniprot.parse(debug=True)
-
+endtime = time.time()
+elapsed = endtime - starttime
+print(elapsed)
 
 if __name__ == '__main__':
     pass

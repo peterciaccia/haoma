@@ -44,7 +44,7 @@ def read(debug=False, chunksize=None):
             names=["RefSeq", "UniProtKB_AC"],
             skiprows=1,
             chunksize=chunksize,
-            nrows=nrows
+            # nrows=nrows
     ):
         chunks.append(chunk)
 
@@ -52,7 +52,7 @@ def read(debug=False, chunksize=None):
     return chunks
 
 
-def repopulate(chunklist, eng, debug=False, repopulate=False):
+def populate(chunklist, eng, debug=False, repopulate=False):
     """
 
     :param chunklist: list of pandas dfs
@@ -62,36 +62,17 @@ def repopulate(chunklist, eng, debug=False, repopulate=False):
     :return:
     """
 
-    to_deletes = [RefSeq_to_Uniprot.__table__]
-
-    Base.metadata.drop_all(bind=eng, tables=to_deletes)
+    if repopulate:
+        to_deletes = [RefSeq_to_Uniprot.__table__]
+        Base.metadata.drop_all(bind=eng, tables=to_deletes)
     Base.metadata.create_all(bind=eng, checkfirst=True)
-    get_size(RefSeq_to_Uniprot, verbose=True)
+    # get_size(RefSeq_to_Uniprot, verbose=True)
     for df in chunklist:
-        # TODO: List comprehension without iterrows() call
-        rows = [RefSeq_to_Uniprot(RefSeq_id=row['RefSeq'], UniProtKB_AC=row['UniProtKB_AC'])
-                for i, row in df.iterrows()]
+        rows = [RefSeq_to_Uniprot(RefSeq_id=x, UniProtKB_AC=y) for x, y in zip(df['RefSeq'], df['UniProtKB_AC'])]
         with Session() as s:
             s.add_all(rows)
             s.commit()
-    # s.close_all()
     get_size(RefSeq_to_Uniprot, verbose=True)
-    # for i, row in df.iterrows():
-    #     stmt = insert(RefSeq).values(RefSeq_id=row['RefSeq'], UniProtKB_AC=row['UniProtKB_AC'])\
-    #         .returning(RefSeq.RefSeq_id)\
-    #         .compile(dialect=dialect())
-    #     obj = RefSeq(RefSeq_id=row['RefSeq'], UniProtKB_AC=row['UniProtKB_AC'])
-    #
-    #     try:
-    #         s.execute(stmt)
-    #     except:
-    #         logging.debug(f'[gene_refseq_uniprotkb_collab] Commit failed for row {obj.RefSeq_id}\t{obj.UniProtKB_AC}')
-    #         s.rollback()
-    #     finally:
-    #         logging.debug('Session closing...')
-    #         s.close()
-    #         logging.debug('Session closed')
-
 
 
 
