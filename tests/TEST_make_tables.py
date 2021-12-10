@@ -21,6 +21,10 @@ logger = logging.getLogger(__name__)
 from db import engine
 from db.models import refseq
 
+def time_table_make(chunksize):
+    chunklist = refseq.read(debug=True, chunksize=chunksize)
+    refseq.populate(chunklist, engine, debug=True)
+
 
 def chunk_timer():
     chunksize_list = [
@@ -28,15 +32,14 @@ def chunk_timer():
         100000,
     ]
 
-    for size in chunksize_list:
-        logger.info(f'timing chunksize = {size}')
-        chunklist = refseq.read(debug=True, chunksize=size)
+    for chunksize in chunksize_list:
+        logger.info(f'timing chunksize = {chunksize}')
         starttime = time.time()
-        refseq.populate(chunklist, engine, debug=True)
-        endtime = time.time()
-        elapsed = endtime-starttime
-        logger.debug(f'elapsed time for chunksize {size}: {elapsed:.8f}')
 
+        time_table_make(chunksize=chunksize)
+        endtime = time.time()
+        elapsed = endtime - starttime
+        logger.debug(f'elapsed time for chunksize {chunksize}: {elapsed:.8f}')
 
 if __name__ == '__main__':
-    chunk_timer()
+    time_table_make(chunksize=10000)

@@ -7,8 +7,7 @@ import pandas as pd
 from sqlalchemy import Table, Column, String, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 
-from db.base import Base
-from db import Session
+from db import Session, Base
 from db.models.refseq import RefSeq_to_Uniprot
 
 
@@ -216,12 +215,6 @@ def _split_multiple(UniProtKB_AC, nested_id_str):
             ]
     return rows
 
-    # rows = [RefSeq_to_Uniprot(RefSeq_id=row['RefSeq'], UniProtKB_AC=row['UniProtKB_AC'])
-    #         for i, row in df.iterrows()]
-    # with Session() as s:
-    #     s.add_all(rows)
-    # s.commit()
-
 
 def _expand_nested_id_rows(df):
     for col in nested_ids:
@@ -247,11 +240,3 @@ def parse(chunksize=100000, debug=False):
                          )
     for df in reader:
         _expand_nested_id_rows(df)
-        # rows = [row for sublist in
-        #         [_split_multiple(x, y) for x, y in zip(df['UniProtKB_AC'], df['RefSeq'])]
-        #         for row in sublist]
-        # for row in rows:
-        #     print(row)
-        # zip nested GI numbers, etc.
-
-

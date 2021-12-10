@@ -5,8 +5,7 @@ from sqlalchemy import Column, String
 import os
 import pandas as pd
 
-from db.base import Base
-from db import Session
+from db import Session, Base
 from db.connect import get_size
 from log import log_utils
 logger = log_utils.get_logger(module=__name__)
