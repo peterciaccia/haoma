@@ -8,8 +8,7 @@ from sqlalchemy import Table, Column, String, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 
 from db import Session, Base
-from db.models.refseq import RefSeq_to_Uniprot
-
+from db.models.models import RefSeq_to_Uniprot
 
 uniprot_idmapping_path = "external_data/uniprot/knowledgebase/idmapping/README.txt"
 uniprot_idmapping = [

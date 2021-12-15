@@ -19,11 +19,12 @@ logging.basicConfig(filename=test_tools.get_log_path(),
                     )
 logger = logging.getLogger(__name__)
 from db import engine
-from db.models import refseq
+from db.models.models import RefSeq_to_Uniprot
+
 
 def time_table_make(chunksize):
-    chunklist = refseq.read(debug=True, chunksize=chunksize)
-    refseq.populate(chunklist, engine, debug=True)
+    chunklist = RefSeq_to_Uniprot.read(debug=True, chunksize=chunksize)
+    RefSeq_to_Uniprot.populate(chunklist, engine, debug=True, repopulate=True)
 
 
 def chunk_timer():
