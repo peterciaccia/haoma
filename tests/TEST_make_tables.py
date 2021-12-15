@@ -23,8 +23,8 @@ from db.models.models import RefSeq_to_Uniprot
 
 
 def time_table_make(chunksize):
-    chunklist = RefSeq_to_Uniprot.read(debug=True, chunksize=chunksize)
-    RefSeq_to_Uniprot.populate(chunklist, engine, debug=True, repopulate=True)
+    chunks = RefSeq_to_Uniprot.parse(debug=True, chunksize=chunksize)
+    RefSeq_to_Uniprot.populate(chunks, engine, debug=True, repopulate=True)
 
 
 def chunk_timer():

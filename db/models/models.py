@@ -43,7 +43,7 @@ class RefSeq_to_Uniprot(Base):
         return f"RefSeq(RefSeq_id={self.RefSeq_id!r}, UniProtKB_AC={self.UniProtKB_AC!r}"
 
     @classmethod
-    def read(cls, debug=False, chunksize=None, nrows=None):
+    def parse(cls, debug=False, chunksize=None, nrows=None):
         """
         :param debug:
         :param chunksize:
@@ -60,8 +60,6 @@ class RefSeq_to_Uniprot(Base):
             logger.debug(f'chunk size set to {chunksize}')
 
         data_path = os.path.join(os.getenv('EXTERNAL_DATA_DIR'), path_from_data_root)
-        chunks = []
-        # TODO: convert csv reader into generator
         for chunk in pd.read_csv(
                 data_path,
                 delimiter='\t',
@@ -70,10 +68,9 @@ class RefSeq_to_Uniprot(Base):
                 chunksize=chunksize,
                 nrows=nrows
         ):
-            chunks.append(chunk)
+            yield chunk
 
-        logger.debug(f'refseq table read into {len(chunks)} chunks')
-        return chunks
+        # logger.debug(f'refseq table read into {len(chunks)} chunks')
 
     @classmethod
     def populate(cls, chunklist, eng, debug=False, repopulate=False):
