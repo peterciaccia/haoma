@@ -43,21 +43,21 @@ class RefSeq_to_Uniprot(Base):
         return f"RefSeq(RefSeq_id={self.RefSeq_id!r}, UniProtKB_AC={self.UniProtKB_AC!r}"
 
     @classmethod
-    def parse(cls, debug=False, chunksize=None, nrows=None):
+    def parse(cls, debug=False, chunk_size=None, nrows=None):
         """
         :param debug:
-        :param chunksize:
+        :param chunk_size:
         :param nrows:
         :return:
         """
-        default_chunksize = 100000
+        default_chunk_size = 100000
         path_from_data_root = "ncbi/refseq/uniprotkb/gene_refseq_uniprotkb_collab"
-        if chunksize is None:
-            chunksize = default_chunksize
+        if chunk_size is None:
+            chunk_size = default_chunk_size
         if debug:
             if nrows is None:
                 nrows=250000
-            logger.debug(f'chunk size set to {chunksize}')
+            logger.debug(f'chunk size set to {chunk_size}')
 
         data_path = os.path.join(os.getenv('EXTERNAL_DATA_DIR'), path_from_data_root)
         for chunk in pd.read_csv(
@@ -65,15 +65,18 @@ class RefSeq_to_Uniprot(Base):
                 delimiter='\t',
                 names=["RefSeq", "UniProtKB_AC"],
                 skiprows=1,
-                chunksize=chunksize,
+                chunksize=chunk_size,
                 nrows=nrows
         ):
-            yield chunk
-
-        # logger.debug(f'refseq table read into {len(chunks)} chunks')
+            # generator handles read_csv
+            try:
+                yield chunk
+            except TypeError:
+                # TODO check that this is the most correct way to handle the end of a generator
+                return
 
     @classmethod
-    def populate(cls, chunklist, eng, debug=False, repopulate=False):
+    def populate(cls, chunks, eng, debug=False, repopulate=False):
         """
         :param chunklist: list of pandas dfs
         :param eng:
@@ -87,9 +90,14 @@ class RefSeq_to_Uniprot(Base):
             Base.metadata.drop_all(bind=eng, tables=to_deletes)
         Base.metadata.create_all(bind=eng, checkfirst=True)
         # get_size(RefSeq_to_Uniprot, verbose=True)
-        for df in chunklist:
+        for df in chunks:
             rows = [RefSeq_to_Uniprot(RefSeq_id=x, UniProtKB_AC=y) for x, y in zip(df['RefSeq'], df['UniProtKB_AC'])]
             with Session() as s:
                 s.add_all(rows)
                 s.commit()
+
+        # TODO: get # lines with a session call
+        _temp = '"Unimplemented"'
+        logger.debug(f'{_temp} lines added')
+
         get_size(RefSeq_to_Uniprot, verbose=True)
