@@ -4,8 +4,6 @@ Purpose:
 Findings:
 """
 
-# external dependencies
-from sqlalchemy.orm import sessionmaker
 
 # in-app modules
 import logging
@@ -17,12 +15,25 @@ logging.basicConfig(filename=test_tools.get_log_path(),
                     format='%(asctime)s,%(msecs)d %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',
                     datefmt='%Y-%m-%d:%H:%M:%S',
                     )
-from db import connect
+from db import utils, engine
 from db.models import refseq
+
+from sqlalchemy import inspect
+from sqlalchemy.ext.automap import automap_base
 
 logger = logging.getLogger(__name__)
 
 
+
+inspector = inspect(engine)
+print(inspector.get_table_names())
+
+
+Base = automap_base()
+Base.prepare(engine, reflect=True)
+
+
 if __name__ == '__main__':
     # TODO: Implement this test
-    connect.get_size(refseq.RefSeq_to_Uniprot, verbose=True)
+    # utils.get_size(refseq.RefSeq_to_Uniprot, verbose=True)
+    pass
