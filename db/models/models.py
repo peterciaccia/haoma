@@ -1,12 +1,18 @@
-import os
 
+# built-ins
+import os
+import logging
+
+# dependencies
 import pandas as pd
 from sqlalchemy import Column, String, Integer, ForeignKey, text
 from sqlalchemy.orm import relationship
+
+# in-app
 from db import Base, Session
-from db.models.refseq import logger
 from db.utils import get_size
 
+logger = logging.getLogger(__name__)
 
 class User(Base):
     __tablename__ = 'users'
