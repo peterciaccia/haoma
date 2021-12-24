@@ -4,36 +4,41 @@ Purpose:
 Findings:
 """
 
-
 # in-app modules
-import logging
-import test_tools
+from test_tools import timer
+import log.conf
 # initial config needs to be defined for each test script
-logging.basicConfig(filename=test_tools.get_log_path(),
-                    filemode="w",
-                    level=logging.DEBUG,
-                    format='%(asctime)s,%(msecs)d %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',
-                    datefmt='%Y-%m-%d:%H:%M:%S',
-                    )
-from db import utils, engine
-from db.models import refseq
+# logging.basicConfig(filename=get_log_path(),
+#                     filemode="w",
+#                     level=logging.DEBUG,
+#                     format='%(asctime)s,%(msecs)d %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',
+#                     datefmt='%Y-%m-%d:%H:%M:%S',
+#                     )
 
+from db import engine
 from sqlalchemy import inspect
 from sqlalchemy.ext.automap import automap_base
 
-logger = logging.getLogger(__name__)
+########################################################################################################################
+########################################################################################################################
 
+logger = log.conf.get_logger(module='TEST_db_stats')
+@timer
+def run(*args, **kwargs):
+    """
+    Write tests here
+    :param task:
+    :param args:
+    :param kwargs:
+    :return:
+    """
+    logger.debug(f'logging "{__file__}"')
+    inspector = inspect(engine)
+    print(inspector.get_table_names())
+    base = automap_base()
+    base.prepare(engine, reflect=True)
 
+###############################
 
-inspector = inspect(engine)
-print(inspector.get_table_names())
+run()
 
-
-Base = automap_base()
-Base.prepare(engine, reflect=True)
-
-
-if __name__ == '__main__':
-    # TODO: Implement this test
-    # utils.get_size(refseq.RefSeq_to_Uniprot, verbose=True)
-    pass

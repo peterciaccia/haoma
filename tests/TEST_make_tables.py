@@ -6,7 +6,8 @@ Findings: Chunk size of 10,000 was faster than chunk size of 100,000
 
 # internal modules
 import logging
-from test_tools import get_log_path, timer
+from test_tools import timer
+from log.conf import get_log_path
 # initial config needs to be defined for each test script
 from db import engine
 from db.models.models import RefSeq_to_Uniprot

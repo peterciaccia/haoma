@@ -10,9 +10,11 @@ import time
 
 # internal modules
 import logging
+
+import log.conf
 import test_tools
 # initial config needs to be defined for each test script
-logging.basicConfig(filename=test_tools.get_log_path(),
+logging.basicConfig(filename=log.conf.get_log_path(),
                     filemode="w",
                     level=logging.DEBUG,
                     format='%(asctime)s,%(msecs)d %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',

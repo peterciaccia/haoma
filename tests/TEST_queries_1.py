@@ -12,12 +12,14 @@ import pandas as pd
 
 # internal
 import logging
+
+import log.conf
 import test_tools
 from db import engine, Base, Session
 from db.models.models import User, Email
 
 load_dotenv()
-logging.basicConfig(filename=test_tools.get_log_path(),
+logging.basicConfig(filename=log.conf.get_log_path(),
                     filemode="w",
                     level=logging.DEBUG,
                     format='%(asctime)s,%(msecs)d %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',

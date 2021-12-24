@@ -1,7 +1,6 @@
 
 # built-ins
 import os
-import logging
 
 # dependencies
 import pandas as pd
@@ -11,8 +10,9 @@ from sqlalchemy.orm import relationship
 # in-app
 from db import Base, Session
 from db.utils import get_size
+import log.conf
+logger = log.conf.get_logger(__name__)
 
-logger = logging.getLogger(__name__)
 
 class User(Base):
     __tablename__ = 'users'

@@ -6,10 +6,13 @@ from pathlib import Path
 from Bio import SeqIO
 
 from dotenv import load_dotenv
+
+import log.conf
+
 load_dotenv()
 
 import test_tools
-test_tools.get_log_path()
+log.conf.get_log_path()
 
 class Workspace:
     """
