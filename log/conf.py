@@ -77,8 +77,10 @@ def resolve_class_namespace(cls):
     return f"{cls.__module__}.{cls.__qualname__}"
 
 
-def get_logger(module=None, cls=None):
+def get_logger(*args, module=None, cls=None):
     """Prepares logger for given class or module """
+    if '__main__' in args:
+        logger = logging.getLogger(__name__)
     if module is not None and cls is not None:
         raise ValueError('cannot pass module names and class declarations simultaneously')
     elif module is not None:

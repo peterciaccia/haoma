@@ -14,12 +14,14 @@ from log import conf
 load_dotenv()
 sys.path.append(os.getenv('PROJECT_TESTS_DIR'))
 
-logger = conf.get_logger(__name__)
 
 if __name__ == '__main__':
     logging.config.dictConfig(LOGGING_CONFIG)
+    logger = conf.get_logger(__name__)
     try:
-        importlib.import_module(sys.argv[1])
+        for test in sys.argv[1:]:
+            logger.info(f'Running test {test}')
+            importlib.import_module(test)
     except IndexError:
         'Ensure that the configuration includes a test script name (exclude .py)'
         raise

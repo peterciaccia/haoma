@@ -18,6 +18,7 @@ class AbstractPart(ABC):
     def do_something_else(self):
         pass
 
+
 class Part(AbstractPart):
 
     def __init__(self, seqrecord, material='dna'):
@@ -27,7 +28,7 @@ class Part(AbstractPart):
         :param seqrecord:
         """
 
-
+        self.logger = log.conf.resolve_class_namespace(self.__class__.__name__)
         self.fiveprime_required = False
         self.threeprime_required = False
 
@@ -48,7 +49,6 @@ class Promoter(Part):
     def __init__(self, seqrecord):
         super().__init__(seqrecord)
 
-        self.logger = log.conf.get_logger(Promoter)
         self.threeprime_required = True
 
 
@@ -57,7 +57,6 @@ class Terminator(Part):
     def __init__(self, seqrecord):
         super().__init__(seqrecord)
 
-        self.logger = log.conf.get_logger(Terminator)
         self.fiveprime_required = True
         self.function = dogma.StopTranscription()
 
@@ -67,15 +66,12 @@ class Cds(Part):
     def __init__(self, seqrecord):
         super().__init__(seqrecord)
 
-        self.logger = log.conf.get_logger(Cds)
         self.fiveprime_required = True
         self.threeprime_required = True
 
 
 class PartInterface:
     def __init__(self, fiveprimepart=None, threeprimepart=None):
-
-        self.logger = log.conf.get_logger(PartInterface)
 
         if fiveprimepart is None and threeprimepart is None:
             raise ValueError(f'A PartInterface instance requires either the five prime part or the three prime part '
