@@ -2,7 +2,6 @@
 Created 2021-10-12
 Connects to mysql container when imported
 """
-import logging
 from db import Session, Base
 
 
@@ -12,6 +11,7 @@ from db import Session, Base
 #     pass
 
 
+# TODO: wrong implementation; need automap_base
 def stats(eng):
     """
     returns, prints Base.metadata

@@ -5,21 +5,13 @@ Findings: Chunk size of 10,000 was faster than chunk size of 100,000
 """
 
 # internal modules
-import logging
 from test_tools import timer
-from log.conf import get_log_path
+import log.conf
 # initial config needs to be defined for each test script
 from db import engine
 from db.models.models import RefSeq_to_Uniprot
 
-logging.basicConfig(filename=get_log_path(),
-                    filemode="w",
-                    level=logging.DEBUG,
-                    format='%(asctime)s,%(msecs)d %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',
-                    datefmt='%Y-%m-%d:%H:%M:%S',
-                    # force=True
-                    )
-logger = logging.getLogger(__name__)
+logger = log.conf.get_logger(module='test')
 
 
 def make_table(chunk_size=10000, repopulate=True):
@@ -44,9 +36,9 @@ def run(*args, **kwargs):
     :param kwargs:
     :return:
     """
+    logger.debug(f'Running test {__file__}')
     rebuild_table(*args, **kwargs, chunk_size=10000)
     return
-
 
 
 if __name__ == '__main__':

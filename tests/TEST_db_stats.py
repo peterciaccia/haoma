@@ -4,16 +4,8 @@ Purpose:
 Findings:
 """
 
-# in-app modules
 from test_tools import timer
 import log.conf
-# initial config needs to be defined for each test script
-# logging.basicConfig(filename=get_log_path(),
-#                     filemode="w",
-#                     level=logging.DEBUG,
-#                     format='%(asctime)s,%(msecs)d %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',
-#                     datefmt='%Y-%m-%d:%H:%M:%S',
-#                     )
 
 from db import engine
 from sqlalchemy import inspect

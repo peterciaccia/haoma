@@ -4,29 +4,15 @@ Purpose: determine best chunk size for flat file import
 Findings: Chunk size of 10,000 was faster than chunk size of 100,000
 """
 
-# internal modules
-import logging
-
+# in-app; used for each test unless otherwise specific
 import log.conf
-import test_tools
-# initial config needs to be defined for each test script
-from db import engine
-from db.models.models import RefSeq_to_Uniprot
 from test_tools import timer
 
-logging.basicConfig(filename=log.conf.get_log_path(),
-                    filemode="w",
-                    level=logging.DEBUG,
-                    format='%(asctime)s,%(msecs)d %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',
-                    datefmt='%Y-%m-%d:%H:%M:%S',
-                    # force=True
-                    )
-logger = logging.getLogger(__name__)
+logger = log.conf.get_logger(module='test')
 
 
-def rebuild_table(chunk_size=10000, repopulate=True):
-    chunks = RefSeq_to_Uniprot.parse(debug=True, chunk_size=chunk_size)
-    RefSeq_to_Uniprot.populate(chunks, engine, debug=True, repopulate=repopulate)
+def foo():
+    logger.debug('bar')
 
 
 ##############################################################################
@@ -39,8 +25,8 @@ def run(*args, **kwargs):
     :param kwargs:
     :return:
     """
-    rebuild_table(*args, **kwargs, chunk_size=10000)
 
+    foo()
 
 
 if __name__ == '__main__':
