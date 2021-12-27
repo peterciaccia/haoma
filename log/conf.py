@@ -15,6 +15,7 @@ from pathlib import Path
 
 load_dotenv()
 
+
 def get_log_path():
     """
     Writes logs for most files except tests
@@ -32,14 +33,14 @@ LOGGING_CONFIG = {
     'disable_existing_loggers': False,
     'formatters': {
         'standard': {
-            'format': '%(asctime)s,%(msecs)d %(levelname)-8s [%(name)s]  %(message)s'
+            'format': '%(asctime)s, %(levelname)-2s [%(name)s] %(module)s %(lineno)d:  %(message)s'
         },
     },
     'handlers': {
         'default': {
+            'class': 'logging.StreamHandler',
             'level': 'INFO',
             'formatter': 'standard',
-            'class': 'logging.StreamHandler',
             'stream': 'ext://sys.stdout',  # Default is stderr
         },
         'file': {
@@ -55,10 +56,10 @@ LOGGING_CONFIG = {
         '': {  # root logger
             'handlers': ['file'],
             'level': 'WARNING',
-            'propagate': False
+            'propagate': True
         },
-        'TEST_db_stats': {
-            'handlers': ['file'],
+        'test': {
+            'handlers': ['default', 'file'],
             'level': 'DEBUG',
             'propagate': True
         },
@@ -90,13 +91,4 @@ def get_logger(module=None, cls=None):
     else:
         raise SyntaxError
 
-    # logger.propagate = CONFIG['propagate']
-    # if CONFIG['quiet'] is True:
-    #     logger.addHandler(logging.NullHandler())
-    #     return logger
-    # logging.config.dictConfig(log.conf.default_config)
-    # logger.setLevel(CONFIG['level'])
     return logger
-
-
-

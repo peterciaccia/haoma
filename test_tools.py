@@ -13,6 +13,7 @@ import log.conf
 load_dotenv()
 logger = log.conf.get_logger()
 
+
 def timer(task, *args, **kwargs):
     """
     decorator function that times other functions

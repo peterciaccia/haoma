@@ -22,7 +22,7 @@ from sqlalchemy.ext.automap import automap_base
 ########################################################################################################################
 ########################################################################################################################
 
-logger = log.conf.get_logger(module='TEST_db_stats')
+logger = log.conf.get_logger(module='test')
 @timer
 def run(*args, **kwargs):
     """
