@@ -5,9 +5,21 @@ Part class declarations
 """
 import dogma
 import log.conf
+from abc import ABC, abstractmethod
 
 
-class Part:
+class AbstractPart(ABC):
+
+    @abstractmethod
+    def get_something(self):
+        pass
+
+    @abstractmethod
+    def do_something_else(self):
+        pass
+
+class Part(AbstractPart):
+
     def __init__(self, seqrecord, material='dna'):
         """
         needs:
@@ -15,7 +27,7 @@ class Part:
         :param seqrecord:
         """
 
-        self.logger = log.conf.get_logger(Part)
+
         self.fiveprime_required = False
         self.threeprime_required = False
 
