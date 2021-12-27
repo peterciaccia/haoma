@@ -11,7 +11,7 @@ from sqlalchemy.orm import relationship
 from db import Base, Session
 from db.utils import get_size
 import log.conf
-logger = log.conf.get_logger(__name__)
+logger = log.conf.get_logger(module='test')
 
 
 class User(Base):

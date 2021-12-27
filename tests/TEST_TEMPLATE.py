@@ -29,5 +29,4 @@ def run(*args, **kwargs):
     foo()
 
 
-if __name__ == '__main__':
-    run()
+run()
