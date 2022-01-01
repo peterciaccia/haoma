@@ -1,0 +1,22 @@
+SGD_ncRNA_xref.txt
+
+file URL: http://sgd-archive.yeastgenome.org/curation/chromosomal_feature/SGD_ncRNA_xref.txt
+
+This tab-delimited file contains SGD xref update information for ncRNA
+entries in GenBank/EMBL/DDBJ and will be updated for each new genome version release.
+
+The SGDID is the recommended identifier for features in SGD.
+
+Columns:
+
+1.  INSDC parent sequence accession
+2.  SGD primary ID (SGDID)
+3.  Locus_tag in feature table (also known as feature_name or systematic_name)
+4.  feature_type, based on terms from Sequence Ontology (http://www.sequenceontology.org)
+5.  RNAcentral accession (https://rnacentral.org)
+
+This README file was udpated on 11 Nov 2021.
+
+===========
+README URL: http://sgd-archive.yeastgenome.org/curation/chromosomal_feature/SGD_ncRNA_xref.README
+===========

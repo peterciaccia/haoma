@@ -1,0 +1,12 @@
+SGD_CDS_xref.txt :
+
+This space-delimited file contains SGD xref update information for CDS
+entries in GenBank/EMBL/DDBJ and is updated for each new genome version release.
+The SGDID is the recommended identifier for features in SGD.
+
+Columns are:
+
+1) Accession Number
+2) PROTEIN_ID of CDS
+3) SGDID
+4) Standard S. cerevisiae ORF Name

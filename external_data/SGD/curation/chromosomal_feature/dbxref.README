@@ -1,0 +1,88 @@
+dbxref.tab :
+
+Maps ORF names and SGDIDs to other IDs, including SwissProt, EC, etc.  Currently, 
+NCBI GI numbers are not included but NCBI DNA, protein, and RefSeq accession IDs 
+are included.  The SGDID is the recommended identifier for features in SGD. Please see below for more details.
+
+This file contains all ORFs.  Updated weekly (Saturday). 
+
+Columns are:
+
+1) DBXREF ID
+2) DBXREF ID source
+3) DBXREF ID type
+4) S. cerevisiae feature name
+5) SGDID
+
+A description of the IDs currently represented in this file.
+
+DBXREF ID source: Candida DB
+DBXREF ID type: Gene ID
+Description: Gene ID of Candida albicans ortholog of the S. cerevisiae gene, 
+from CandidaDB at the Institute Pasteur.
+Corresponding URL: http://genolist.pasteur.fr/CandidaDB/
+
+DBXREF ID source: DIP
+DBXREF ID type: Gene ID
+Description: ID of the S. cerevisiae ORF used by the Database of Interacting 
+Proteins (DIP)
+Corresponding URL: http://dip.doe-mbi.ucla.edu/dip/
+
+DBXREF ID source: EUROSCARF
+DBXREF ID type: Gene ID
+Description: S. cerevisiae ORF name used at the European Saccharomyces cerevisiae 
+Archive for Functional Analysis (EUROFAN), source for yeast deletion strains in Europe
+Corresponding URL: http://www.uni-frankfurt.de/fb15/mikro/euroscarf/
+
+DBXREF ID source: GermOnline
+DBXREF ID type: Gene ID
+Description: ID of the S. cerevisiae ORF at GermOnline, a database of germ
+cell growth and gametogenesis.
+Corresponding URL: http://www.germonline.org/
+
+DBXREF ID source: IUBMB
+DBXREF ID type: EC number
+Description: EC number of the reaction catalyzed by the S. cerevisiae protein.  EC
+numbers are assigned to reactions by the Internal Union of Biochemistry and
+Molecular Biology.
+Corresponding URL: http://www.expasy.ch/cgi-bin/nicezyme.pl?
+
+DBXREF ID source: MetaCyc
+DBXREF ID type: Pathway ID
+Description: ID of the pathway in which the S. cerevisiae protein participates.
+Corresponding URL: http://pathway.yeastgenome.org/
+
+DBXREF ID source: NCBI
+DBXREF ID type: DNA version ID
+Description: ID representing an NCBI (DDBJ/EMBL-bank/GenBank) accession number 
+for the DNA sequence of an S. cereivsiae chromosomal feature.
+Corresponding URL: http://www.ncbi.nlm.nih.gov/sites/entrez?db=nucleotide
+
+DBXREF ID source: NCBI
+DBXREF ID type: Gene ID
+Description: ID of the S. cerevisiae ORF at the NCBI Entrez Gene database.
+Corresponding URL: http://www.ncbi.nlm.nih.gov/sites/entrez?db=gene
+
+DBXREF ID source: NCBI
+DBXREF ID type: Protein version ID
+Description: ID representing an NCBI (DDBJ/EMBL-bank/GenBank) accession 
+number for the protein sequence of an S. cerevisiae ORF.
+Corresponding URL: http://www.ncbi.nlm.nih.gov/sites/entrez?db=protein
+
+DBXREF ID source: NCBI
+DBXREF ID type: RefSeq Accession
+Description: ID of the S. cerevisiae chromosome sequence in the NCBI RefSeq 
+database.
+Corresponding URL: http://www.ncbi.nlm.nih.gov/RefSeq/
+
+DBXREF ID source: NCBI
+DBXREF ID type: RefSeq protein version ID
+Description: ID of the S. cerevisiae protein sequence in the NCBI RefSeq 
+database.
+Corresponding URL: http://www.ncbi.nlm.nih.gov/sites/entrez?db=protein
+
+DBXREF ID source: SIB
+DBXREF ID type: Swiss-Prot ID
+Description: ID representing the accession number at the Swiss-Prot protein database
+for a S. cerevisiae protein.
+Corresponding URL: http://us.expasy.org/sprot/
