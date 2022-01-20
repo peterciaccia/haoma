@@ -12,7 +12,11 @@ from dotenv import load_dotenv
 from log import conf
 
 load_dotenv()
-sys.path.append(os.getenv('PROJECT_TESTS_DIR'))
+
+# TODO: add all subdirectories function
+project_tests_dir = os.getenv('PROJECT_TESTS_DIR')
+sys.path.append(project_tests_dir)
+# sys.path.append(os.path.join)
 
 
 if __name__ == '__main__':

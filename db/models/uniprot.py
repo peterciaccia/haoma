@@ -7,7 +7,8 @@ import pandas as pd
 from sqlalchemy import Table, Column, String, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 
-from db import Session, Base
+from db import Session
+from db.Base import Base
 from db.models.models import RefSeq_to_Uniprot
 
 uniprot_idmapping_path = "external_data/uniprot/knowledgebase/idmapping/README.txt"

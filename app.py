@@ -46,14 +46,14 @@ class System:
 
 class NetworkSchema:
     """
-    Defines network motifs for interacting parts
+    Defines network motifs for interacting PartLibrary
     """
     def __init__(self):
         pass
 
 class PartBuilder:
     """
-    PartBuilder assembles parts based on design schemas
+    PartBuilder assembles PartLibrary based on design schemas
     """
     def __init__(self):
         pass

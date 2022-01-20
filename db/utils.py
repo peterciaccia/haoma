@@ -41,12 +41,11 @@ def get_size(Table_Declaration, debug=False):
     with Session() as s:
         num_rows = s.query(Table_Declaration).count()
     if debug:
-        logger.debug(f"Rows:\t{num_rows}")
+        logger.debug(f"Table '{Table_Declaration.__tablename__}' contains {num_rows} rows")
     return num_rows
 
 
 class LibraryViewer(object):
-
 
     def __init__(self):
         pass

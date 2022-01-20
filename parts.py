@@ -8,15 +8,6 @@ import log.conf
 from abc import ABC, abstractmethod
 
 
-class AbstractPart(ABC):
-
-    @abstractmethod
-    def get_something(self):
-        pass
-
-    @abstractmethod
-    def do_something_else(self):
-        pass
 
 
 class Part(AbstractPart):

@@ -8,7 +8,8 @@ from sqlalchemy import Column, String, Integer, ForeignKey, text
 from sqlalchemy.orm import relationship
 
 # in-app
-from db import Base, Session
+from db import Session
+from db.Base import Base
 from db.utils import get_size
 import log.conf
 logger = log.conf.get_logger(module='test')
@@ -34,7 +35,7 @@ class Email(Base):
 
     id = Column(Integer, primary_key=True)
     email_address = Column(String(128), nullable=False)
-    used_id = Column(Integer, ForeignKey('users.id'))
+    user_id = Column(Integer, ForeignKey('users.id'))
 
     user = relationship('User', back_populates='email_addresses')
 
@@ -77,7 +78,7 @@ class RefSeq_to_Uniprot(Base):
             # generator handles read_csv
             try:
                 yield chunk
-            except TypeError:
+            except (TypeError, StopIteration):
                 # TODO check that this is the most correct way to handle the end of a generator
                 logger.warning('check generator ending')
                 return
@@ -107,4 +108,4 @@ class RefSeq_to_Uniprot(Base):
         _temp = '"Unimplemented"'
         logger.debug(f'{_temp} lines added')
 
-        get_size(RefSeq_to_Uniprot, verbose=True)
+        get_size(RefSeq_to_Uniprot, debug=True)

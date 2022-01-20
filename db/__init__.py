@@ -6,7 +6,6 @@ import os
 import logging
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import DeferredReflection, declarative_base
 from sqlalchemy.orm import sessionmaker
 
 logger = logging.getLogger(__name__)
@@ -34,8 +33,6 @@ logger.debug(f'MySQL Connection string:\t{connection_str}')
 # TODO: update create_engine with future=True flag and test functionality
 engine = create_engine(connection_str, echo=False)
 # DeferredReflection.prepare(engine)
-Base = declarative_base()
-Base.metadata.create_all(engine)
 
 # Constructs Session class declaration
 Session = sessionmaker(bind=engine)
