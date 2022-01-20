@@ -79,6 +79,7 @@ class RefSeq_to_Uniprot(Base):
                 yield chunk
             except TypeError:
                 # TODO check that this is the most correct way to handle the end of a generator
+                logger.warning('check generator ending')
                 return
 
     @classmethod

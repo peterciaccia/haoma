@@ -4,6 +4,8 @@ Connects to mysql container when imported
 """
 from db import Session, Base
 
+import log.conf
+logger = log.conf.get_logger(module='test')
 
 
 # class SessionWrapper(Session):
@@ -27,19 +29,19 @@ def stats(eng):
     return Base.metadata
 
 
-def get_size(Table_Declaration, verbose=False):
+def get_size(Table_Declaration, debug=False):
     """
     Returns number of rows in Table
     :param session: sqlalchemy session
     :param Table_Declaration: Declarative table class (uninstantiated)
-    :param verbose:
+    :param debug:
     :return:
     """
 
     with Session() as s:
         num_rows = s.query(Table_Declaration).count()
-    if verbose:
-        print(f"Rows:\t{num_rows}")
+    if debug:
+        logger.debug(f"Rows:\t{num_rows}")
     return num_rows
 
 

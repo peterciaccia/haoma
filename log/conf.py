@@ -2,6 +2,9 @@
 
 """
 # built-ins
+import os
+from datetime import datetime
+from pathlib import Path
 import logging
 import logging.config
 
@@ -9,22 +12,27 @@ import logging.config
 from dotenv import load_dotenv
 
 # in-app
-import os
-from datetime import datetime
-from pathlib import Path
+# nothing
 
 load_dotenv()
 
 
-def get_log_path():
+def get_log_path(path=None):
     """
     Writes logs for most files except tests
+    :param path:
     :return:
     """
-    log_dir = Path(os.getenv('PROJECT_LOG_DIR'))
-    now = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-    log_name = Path(now)
-    log_path = log_dir / log_name.with_suffix('.log')
+    if path is None:
+        log_dir = os.path.join(os.getenv("PROJECT_DIR"), "logs", "dated")
+        now = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        log_name = Path(now)
+    elif path == "latest":
+        log_dir = os.path.join(os.getenv("PROJECT_DIR"), "logs")
+        log_name = Path("latest")
+    else:
+        raise SyntaxError
+    log_path = os.path.join(log_dir, log_name.with_suffix(".log"))
     return log_path
 
 
@@ -50,6 +58,14 @@ LOGGING_CONFIG = {
             'filename': get_log_path(),
             'mode': 'a',
             'encoding': 'utf-8'
+        },
+        'recent': {
+            'class': 'logging.FileHandler',
+            'level': 'DEBUG',
+            'formatter': 'standard',
+            'filename': get_log_path(path="latest"),
+            'mode': 'w',
+            'encoding': 'utf-8'
         }
     },
     'loggers': {
@@ -59,7 +75,7 @@ LOGGING_CONFIG = {
             'propagate': True
         },
         'test': {
-            'handlers': ['default', 'file'],
+            'handlers': ['file', 'recent'],
             'level': 'DEBUG',
             'propagate': True
         },
