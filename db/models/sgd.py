@@ -42,7 +42,7 @@ class SgdFeature(Base):
     ]
 
     id = Column(Integer, primary_key=True)
-    sgd_id = Column(String(16), nullable=False)
+    sgd_id = Column(String(16), index=True, nullable=False)
     feature_type = Column(String(36), nullable=False)
     feature_qualifier = Column(String(24))
     feature_name = Column(String(16))
@@ -139,11 +139,32 @@ class SgdFeature(Base):
         get_size(SgdFeature, debug=debug)
 
         with Session() as s:
+            sgd_feature_list = []
+
+            # imports simple features
             for i, df_row in df.iterrows():
                 # row_dict = {x: df_row[x] for x in cls.column_names}
-                row = SgdFeature(**{x: df_row[x] for x in cls.column_names})
-                s.add(row)
-                s.commit()
+                # row = SgdFeature(**{x: df_row[x] for x in cls.column_names})
+                sgd_feature_list.append(SgdFeature(**{x: df_row[x] for x in cls._get_simple_column_names()}))
+            s.add_all(sgd_feature_list)
+            s.commit()
+            many_to_one_sgd_objects_list = []
+            # test = SgdAlias('some_alias', 'some_sgd_feature_id')
+
+            # imports compound features
+            for i, df_row in df.iterrows():
+
+                foreign_key = "sgd_id"
+                many_to_one_sgd_objects_list.extend(
+                    [SgdAlias(alias=x, sgd_feature_id=df_row[foreign_key])
+                     for x in df_row["aliases"]])
+                many_to_one_sgd_objects_list.extend(
+                    [SecondarySgdId(secondary_sgd_id=x, sgd_feature_id=df_row[foreign_key])
+                     for x in df_row["secondary_sgd_id"]]
+                )
+            pass
+            s.add_all(many_to_one_sgd_objects_list)
+            s.commit()
 
         get_size(SgdFeature, debug=debug)
 
@@ -166,8 +187,8 @@ class SgdAlias(Base):
     __tablename__ = "sgd_feature_aliases"
     __table_args__ = {"extend_existing": True}
     id = Column(Integer, primary_key=True)
-    alias = Column(String(48))
-    sgd_feature_id = Column(Integer, ForeignKey("sgd_features.id", ondelete="CASCADE"))
+    alias = Column(Text)
+    sgd_feature_id = Column(String(16), ForeignKey("sgd_features.sgd_id", ondelete="CASCADE"), nullable=False)
 
     sgd_feature = relationship("SgdFeature", back_populates="aliases")
 
@@ -178,6 +199,6 @@ class SecondarySgdId(Base):
     __table_args__ = {'extend_existing': True}
     id = Column(Integer, primary_key=True)
     secondary_sgd_id = Column(String(48))
-    sgd_feature_id = Column(Integer, ForeignKey("sgd_features.id", ondelete="CASCADE"))
+    sgd_feature_id = Column(String(16), ForeignKey("sgd_features.sgd_id", ondelete="CASCADE"), nullable=False)
 
     sgd_feature = relationship('SgdFeature', back_populates='secondary_sgd_id')

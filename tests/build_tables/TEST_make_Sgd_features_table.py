@@ -17,7 +17,7 @@ logger = log.conf.get_logger(module='test')
 
 def parse_Sgd_features():
 
-    SgdFeature.populate(eng=engine, repopulate=True, debug=True)
+    SgdFeature.populate(eng=engine, repopulate=True, debug=False)
 
 
 ##############################################################################
