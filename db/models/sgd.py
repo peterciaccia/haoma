@@ -16,7 +16,6 @@ from db.utils import get_size
 import log.conf
 logger = log.conf.get_logger(module='test')
 
-
 class SgdFeature(Base):
 
     __tablename__ = 'sgd_features'
@@ -41,8 +40,6 @@ class SgdFeature(Base):
         'coordinate_version',
         'description'
     ]
-    _simple_column_set = (0, 1, 2, 3, 4, 6, 8, 9, 10, 11, 12, 13, 14)
-    _compound_column_set = (5, 7)
 
     id = Column(Integer, primary_key=True)
     sgd_id = Column(String(16), nullable=False)
@@ -74,6 +71,16 @@ class SgdFeature(Base):
     #     return [SecondarySgdId()]
 
     @classmethod
+    def _get_simple_column_names(cls):
+        _simple_column_tup = (0, 1, 2, 3, 4, 6, 8, 9, 10, 11, 12, 13, 14)
+        return [cls.column_names[i] for i in _simple_column_tup]
+
+    @classmethod
+    def _get_compound_column_names(cls):
+        _compound_column_tup = (5, 7)
+        return [cls.column_names[i] for i in _compound_column_tup]
+
+    @classmethod
     def instantiate_list(cls, name_list, DeclarativeTable, *args, **kwargs):\
         # **{x: df_row[x] for x in cls.column_names}
         return [DeclarativeTable(**{}) for name in name_list]
@@ -94,17 +101,15 @@ class SgdFeature(Base):
             nrows=nrows
         )
 
-        _simple_column_names = [cls.column_names[i] for i in cls._simple_column_set]
-        _compound_column_names = [cls.column_names[i] for i in cls._compound_column_set]
-
+        # Splits "|"-delimited fields into lists
+        _compound_column_names = cls._get_compound_column_names()
         for col in _compound_column_names:
             df[col] = df[col].str.split('|')
-
         # replaces NaN with None for sqlalchemy import
         df = df.where(pd.notnull(df), None)
+        # Converts values in compound columns from None to empty list
         for col in _compound_column_names:
             df[col] = df[col].apply(lambda x: [] if x is None else x)
-        df['aliases'] = df['aliases'].apply(cls.instantiate_list, args=(SgdAlias,), kwargs={})
 
         return df
 
@@ -146,13 +151,9 @@ class SgdFeature(Base):
         #     s.add_all(row)
         #     s.commit()
 
-
-
         # TODO: get # lines with a session call
         _temp = '"Unimplemented"'
         logger.debug(f'{_temp} lines added')
-
-
 
 
 """
