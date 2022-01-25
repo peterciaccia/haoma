@@ -86,11 +86,7 @@ class SgdFeature(Base):
         return [DeclarativeTable(**{}) for name in name_list]
 
     @classmethod
-    def parse(cls, debug=False, nrows=None):
-        # TODO: Currently nrows is not used, as populate is the only method calling parse
-        if debug:
-            if nrows is None:
-                nrows = 1000
+    def parse(cls, nrows=None):
 
         # reads SGD features
         df = pd.read_csv(
@@ -135,7 +131,7 @@ class SgdFeature(Base):
         Base.metadata.create_all(bind=eng, checkfirst=True)
 
         # get_size(RefSeq_to_Uniprot, verbose=True)
-        df = SgdFeature.parse(debug=debug)
+        df = SgdFeature.parse()
         get_size(SgdFeature, debug=debug)
 
         with Session() as s:

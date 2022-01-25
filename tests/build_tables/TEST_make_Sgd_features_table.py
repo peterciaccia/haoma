@@ -17,10 +17,11 @@ logger = log.conf.get_logger(module='test')
 
 def parse_Sgd_features():
 
-    SgdFeature.populate(eng=engine, repopulate=True, debug=False)
+    SgdFeature.populate(eng=engine, repopulate=True, debug=True)
 
 
 ##############################################################################
+
 @timer
 def run(*args, **kwargs):
     """
