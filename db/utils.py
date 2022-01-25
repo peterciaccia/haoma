@@ -29,25 +29,25 @@ def stats(eng):
     return Base.metadata
 
 
-def get_size(Table_Declaration, debug=False):
+def get_size(Table_Declaration, log=True):
     """
     Returns number of rows in Table
-    :param session: sqlalchemy session
     :param Table_Declaration: Declarative table class (uninstantiated)
-    :param debug:
+    :param log:
     :return:
     """
 
     with Session() as s:
-        num_rows = s.query(Table_Declaration).count()
-    if debug:
-        logger.debug(f"Table '{Table_Declaration.__tablename__}' contains {num_rows} rows")
-    return num_rows
+        nrows = s.query(Table_Declaration).count()
+    if log:
+        logger.debug(f"Table '{Table_Declaration.__tablename__}' contains {nrows} rows")
+    return nrows
 
 
 class LibraryViewer(object):
 
     def __init__(self):
+
         pass
         """
         Functionalities

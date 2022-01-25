@@ -105,25 +105,23 @@ class SgdFeature(Base):
     @classmethod
     def populate(cls, eng=engine, debug=False, repopulate=False):
         """
-        :param chunklist: list of pandas dfs
         :param eng:
         :param debug:
         :param repopulate:
         :return:
         """
 
+        delete_if_repopulate = [
+            SgdAlias.__table__,
+            SecondarySgdId.__table__,
+            SgdFeature.__table__
+        ]
         if repopulate:
-            to_deletes = [
-                SgdAlias.__table__,
-                SecondarySgdId.__table__,
-                SgdFeature.__table__
-            ]
-            logger.debug(f"repopulating '{cls.__tablename__}'")
-            Base.metadata.drop_all(bind=eng, tables=to_deletes)
+            cls.drop_tables(delete_if_repopulate)
         Base.metadata.create_all(bind=eng, checkfirst=True)
 
         df = SgdFeature.parse()
-        get_size(cls, debug=debug)
+        get_size(cls)
 
         with Session() as s:
             sgd_feature_list = []
