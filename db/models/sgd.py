@@ -1,6 +1,6 @@
 """
 Created by Peter Ciaccia
-This module contains Declarative mappings for SGD feature annotations.
+This module contains Declarative mappings for SGD feature annotations and the methods to populate these tables.
 """
 # built-ins
 import os
