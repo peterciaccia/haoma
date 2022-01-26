@@ -2,6 +2,7 @@
 # built-ins
 import os
 from pathlib import Path
+import json
 
 # dependencies
 import pandas as pd
@@ -42,7 +43,7 @@ class StringdbProteinLink(Base):
                                  sep=' ',
                                  chunksize=100000,
                                  nrows=nrows):
-            chunk.rename(columns={'protein1': 'protein', 'protein2': 'interacter'}, inplace=True)
+            chunk.rename(columns={'protein1': 'protein_id', 'protein2': 'interacter_id'}, inplace=True)
             yield chunk
 
     @classmethod
@@ -68,8 +69,8 @@ class StringdbProteinLink(Base):
             logger.debug(f"Chunk {counter} added to {cls.__tablename__}")
             get_size(cls)
 
-    protein = Column(String(16), primary_key=True, nullable=False)
-    interacter = Column(String(16), primary_key=True, nullable=False)
+    protein_id = Column(String(16), primary_key=True)
+    interacter_id = Column(String(16), primary_key=True)
     neighborhood = Column(Integer)
     neighborhood_transferred = Column(Integer)
     fusion = Column(Integer)
@@ -92,6 +93,9 @@ class StringdbAlias(Base):
     __table_args__ = {'extend_existing': True}
     data_relative_path = Path('external_data/string-db/by-organism/Saccharomyces-cerevisiae/'
                               '4932.protein.aliases.v11.5.txt.gz')
+    # TODO: Make the below attributes abstract class attributes
+    data_filename = Path(os.path.basename(data_relative_path))
+    config_path = os.path.join(os.getenv('EXTERNAL_DATA_CONFIG'), data_filename.with_suffix(".json"))
 
     @classmethod
     def parse(cls, debug=False):
@@ -105,9 +109,39 @@ class StringdbAlias(Base):
             yield chunk
 
     @classmethod
+    def generate_unique_source_names(cls):
+
+        unique_sources = []
+        chunklist = []
+        for chunk in pd.read_csv(cls.data_path,
+                                 compression='gzip',
+                                 sep='\t',
+                                 chunksize=100000):
+            unique_sources.extend(chunk['source'].unique())
+            chunk['length'] = chunk['alias'].apply(len)
+            chunklist.append(chunk)
+        df = pd.concat(chunklist)
+        max_values = df.loc[df.groupby('source')['length'].idxmax()]
+        config_dict = {'unique_sources': dict(sorted(zip(max_values['source'],
+                                                         max_values['length']),
+                                                     key=lambda x: x[0]))
+                       }
+        with open(cls.config_path, 'w') as f:
+            json.dump(config_dict, f, indent=2)
+            logger.info({f"Wrote data source names in {cls.data_path} to {cls.config_path}"})
+
+
+    @classmethod
+    def load_config(cls):
+        with open(cls.config_path, 'r') as f:
+            conf = json.load(f)
+        df = pd.DataFrame(columns=['string_protein_id'].extend(conf['unique_sources']))
+        return df
+
+    @classmethod
     def populate(cls, repopulate=False, eng=engine):
         # Table pre-formatting
         if repopulate:
-            cls.repopulate(eng=eng)
+            cls.drop_tables(eng=eng)
         Base.metadata.create_all(bind=eng, checkfirst=True)
 
