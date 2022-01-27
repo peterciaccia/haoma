@@ -7,7 +7,6 @@ from sqlalchemy.ext.declarative import declared_attr, declarative_base
 
 # in-app
 from db import engine
-from db.utils import get_size
 
 import log.conf
 logger = log.conf.get_logger(module='test')
@@ -26,13 +25,32 @@ class AbstractBase(object):
         return cls.__name__.lower()
 
     @classmethod
-    def drop_tables(cls, to_deletes, eng=engine):
-        get_size(cls)
-        double_check = input(f"Are you sure you want to drop table {cls.__tablename__} and its "
-                             f"{get_size(cls, log=False)} rows?\nType 'y' to proceed\n")
-        if double_check == 'y':
+    @property
+    def table_drop_order(cls):
+        return []
+
+    @classmethod
+    def drop_tables(cls, to_deletes=None, eng=engine, checkfirst=True):
+        def drop():
+            # TODO:
+            table_names = [x.fullname for x in to_deletes]
             Base.metadata.drop_all(bind=eng, tables=to_deletes)
-            logger.warning(f"Table {cls.__tablename__} dropped")
+            logger.warning(f"Tables {table_names} dropped")
+
+        if to_deletes is None:
+            to_deletes = cls.table_drop_order
+        if not checkfirst:
+            drop()
+        else:
+            response = input(f"Type 'y' to confirm table drop")
+            if response == 'y':
+                drop()
+            else:
+                logger.warning(f"No confirmation provided. Tables {to_deletes} not dropped")
+
+    @classmethod
+    def defer_implementation(cls):
+        pass
 
 
 Base = declarative_base(cls=AbstractBase)

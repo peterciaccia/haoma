@@ -66,6 +66,15 @@ class SgdFeature(Base):
         return f"<SgdFeatures(name={self.feature_name} sgd_id={self.sgd_id})>"
 
     @classmethod
+    @property
+    def table_drop_order(cls):
+        return [
+            SgdAlias.__table__,
+            SecondarySgdId.__table__,
+            cls.__table__,
+        ]
+
+    @classmethod
     def _get_simple_column_names(cls):
         _simple_column_tup = (0, 1, 2, 3, 4, 6, 8, 9, 10, 11, 12, 13, 14)
         return [cls.column_names[i] for i in _simple_column_tup]
@@ -111,13 +120,8 @@ class SgdFeature(Base):
         :return:
         """
 
-        delete_if_repopulate = [
-            SgdAlias.__table__,
-            SecondarySgdId.__table__,
-            SgdFeature.__table__
-        ]
         if repopulate:
-            cls.drop_tables(delete_if_repopulate)
+            cls.drop_tables(cls.table_drop_order, checkfirst=False)
         Base.metadata.create_all(bind=eng, checkfirst=True)
 
         df = SgdFeature.parse()

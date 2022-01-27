@@ -17,8 +17,9 @@ logger = log.conf.get_logger(module='test')
 
 def parse_stringdb():
 
-    stringdb.StringdbProteinLink.populate(repopulate=True, debug=False)
-
+    stringdb.StringdbAlias.set_config()
+    stringdb.StringdbAlias.drop_tables(checkfirst=False)
+    stringdb.StringdbAlias.populate(repopulate=True)
 
 ##############################################################################
 
