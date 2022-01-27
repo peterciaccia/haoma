@@ -5,3 +5,4 @@ logs/
 scratch/
 .DS_Store
 external_data/ncbi/*
+external_data/string-db/**
