@@ -32,7 +32,6 @@ class AbstractBase(object):
     @classmethod
     def drop_tables(cls, to_deletes=None, eng=engine, checkfirst=True):
         def drop():
-            # TODO:
             table_names = [x.fullname for x in to_deletes]
             Base.metadata.drop_all(bind=eng, tables=to_deletes)
             logger.warning(f"Tables {table_names} dropped")

@@ -231,7 +231,6 @@ class StringdbAlias(Base):
     protein_id = Column(String(16), primary_key=True)
     BLAST_KEGG_EC = Column(String(16))
     BLAST_KEGG_GENEID = Column(Integer)
-    # BLAST_KEGG_KEGGID = Column(String(16))
     BLAST_KEGG_KEGGID = relationship('Stringdb_BLAST_KEGG_KEGGID', back_populates='stringdb_protein_alias')
     BLAST_KEGG_NAME = Column(Text)
     BLAST_KEGG_NAME_SYNONYM = Column(String(12))
@@ -283,7 +282,8 @@ class StringdbAlias(Base):
     Ensembl_protein_id = Column(String(10))
     Ensembl_transcript = Column(String(10))
     Ensembl_translation = Column(String(10))
-    SGD_ID = Column(String(10))
+    # SGD_ID = Column(String(16))
+    SGD_ID = relationship('SgdFeature', back_populates='stringdb_protein_alias')
     SGD_PRIMARY = Column(String(10))
     SGD_SYNONYM = Column(Text)
 
