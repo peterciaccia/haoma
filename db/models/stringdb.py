@@ -14,6 +14,7 @@ from db import engine
 from db.Base import Base
 from db import Session
 from db.utils import get_size
+import db.models.sgd as sgd
 
 import log.conf
 
@@ -204,6 +205,7 @@ class StringdbAlias(Base):
                 values = aliases.loc[aliases['source'] == field, 'alias']
                 # class_ = getattr(__import__(__name__))
                 # to_add = [class_()]
+                # TODO: improve implementation with calls to a method to perform row creation dynamically
                 if field == 'BLAST_KEGG_KEGGID':
                     rows.extend([Stringdb_BLAST_KEGG_KEGGID(kegg_id=x, stringdb_protein_id=id_)
                                  for x in values])
@@ -282,10 +284,11 @@ class StringdbAlias(Base):
     Ensembl_protein_id = Column(String(10))
     Ensembl_transcript = Column(String(10))
     Ensembl_translation = Column(String(10))
-    # SGD_ID = Column(String(16))
-    SGD_ID = relationship('SgdFeature', back_populates='stringdb_protein_alias')
+    SGD_ID = Column(String(16), ForeignKey('sgd_features.sgd_id'))
     SGD_PRIMARY = Column(String(10))
     SGD_SYNONYM = Column(Text)
+
+    sgd_feature = relationship('SgdFeature', backref='stringdb_protein_aliases')
 
 # Many to one
 

@@ -108,4 +108,4 @@ class RefSeq_to_Uniprot(Base):
         _temp = '"Unimplemented"'
         logger.debug(f'{_temp} lines added')
 
-        get_size(RefSeq_to_Uniprot, debug=True)
+        get_size(RefSeq_to_Uniprot)

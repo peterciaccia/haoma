@@ -45,7 +45,7 @@ class SgdFeature(Base):
     ]
 
     id = Column(Integer, primary_key=True)
-    sgd_id = Column(String(16), index=True, nullable=False)
+    sgd_id = Column(String(16), index=True, nullable=False, unique=True)
     feature_type = Column(String(36), nullable=False)
     feature_qualifier = Column(String(24))
     feature_name = Column(String(16))

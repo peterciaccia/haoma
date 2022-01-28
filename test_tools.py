@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 import log.conf
 
 load_dotenv()
-logger = log.conf.get_logger()
+logger = log.conf.get_logger(module='test')
 
 
 def timer(task, *args, **kwargs):
